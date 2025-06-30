@@ -19,7 +19,7 @@ body {
 /* SIDEBAR  */
 .sidebar {
   width: 250px;
-  height: auto;
+  height: 100vh;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -51,13 +51,13 @@ nav ul li a {
   text-decoration: none;
   font-weight: bold;
   display: flex;
-  padding: 25px;
+  padding: 20px 25px;
   border-radius: 25px;
   align-items: center;
   gap: 20px;
   line-height: 1.5;
   transition: background-color 0.3s ease, color 0.3s ease;
-  border: 1px solid transparent;
+  border: 1px solid rgba(0, 0, 0, 0.207);
 }
 
 nav ul li a:hover {
