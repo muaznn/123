@@ -1,6 +1,6 @@
 <?php include 'db.php'; ?>
 <?php
-$id = $_GET['id'];
+$id = isset($_GET['id']) ? $_GET['id'] : 0;
 $sql = "SELECT * FROM inventory WHERE id=$id";
 $result = $conn->query($sql);
 $row = $result->fetch_assoc();

@@ -1,6 +1,7 @@
 <?php include 'db.php'; ?>
 <?php
-$id = $_GET['id'];
+$id = isset($_GET['id']) ? $_GET['id'] : 0;
+$
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $code = $_POST['product_code'];
