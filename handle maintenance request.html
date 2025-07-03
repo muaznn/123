@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Handle Maintenance Request</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+  </head>
+  <body>
+    <!-- Placeholder untuk sidebar -->
+    <div id="sidebar-placeholder"></div>
+
+    <div class="main-content">
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text"
+            >Admin <i class="fas fa-chevron-down text-base"></i
+          ></span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+      <div class="table-container">
+        <div class="table-title">
+          <span class="handle-maintenance-title">Maintenance Request</span>
+          <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search" class="search-input" />
+          </div>
+          <button class="filter-btn">
+            <i class="fas fa-filter"></i> Filter
+          </button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Request ID</th>
+              <th>User ID</th>
+              <th>User Name</th>
+              <th>Status</th>
+              <th>Equipment</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1.</td>
+              <td>123456</td>
+              <td>240504</td>
+              <td>NURUL FARISHA JAMAL</td>
+              <td class="status-cell">
+                <div class="status-indicator pending"></div>
+                <span class="status-text pending">Pending</span>
+              </td>
+              <td>Dumbbell</td>
+              <td class="action-buttons">
+                <i class="fa view fa-eye" aria-hidden="true"></i>
+                <i class="fa edit fa-pencil" aria-hidden="true"></i>
+                <i class="fa delete fa-trash" aria-hidden="true"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>2.</td>
+              <td>567890</td>
+              <td>200402</td>
+              <td>NUR AISYA AFIZI</td>
+              <td class="status-cell">
+                <div class="status-indicator completed"></div>
+                <span class="status-text pending">Complete</span>
+              </td>
+              <td>Treadmill</td>
+              <td class="action-buttons">
+                <i class="fa view fa-eye" aria-hidden="true"></i>
+                <i class="fa edit fa-pencil" aria-hidden="true"></i>
+                <i class="fa delete fa-trash" aria-hidden="true"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>3.</td>
+              <td>987654</td>
+              <td>230604</td>
+              <td>FARISHA JAMAL 2</td>
+              <td class="status-cell">
+                <div class="status-indicator in-progress"></div>
+                <span class="status-text pending">In Progress</span>
+              </td>
+              <td>Swiss Ball</td>
+              <td class="action-buttons">
+                <i class="fa view fa-eye" aria-hidden="true"></i>
+                <i class="fa edit fa-pencil" aria-hidden="true"></i>
+                <i class="fa delete fa-trash" aria-hidden="true"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script>
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-placeholder").innerHTML = data;
+        });
+    </script>
+  </body>
+</html>

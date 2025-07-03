@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+    <title>Maintenance Request Details</title>
+  </head>
+  <body>
+    <!-- Placeholder untuk sidebar -->
+    <div id="sidebar-placeholder"></div>
+
+    <div class="main-content">
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text"
+            >Admin <i class="fas fa-chevron-down text-base"></i
+          ></span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+      <div class="header-title-wrapper">
+        <div class="maintenance-title">Maintenance Request</div>
+        <div class="btn-holder">
+          <button class="btn back">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <button class="btn big-delete">
+            <i class="fas fa-trash-alt"></i> Delete
+          </button>
+        </div>
+      </div>
+      <div class="request-detail-wrapper">
+        <div class="left-request-detail">
+          <h2>Equipment Maintenance Details</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Request ID</label>
+              <div class="info-box">987654</div>
+            </div>
+            <div class="info-item">
+              <label>Equipment</label>
+              <div class="info-box">Swiss Ball</div>
+            </div>
+            <div class="info-item">
+              <label>Date Submitted</label>
+              <div class="info-box">27 January 2025</div>
+            </div>
+            <div class="info-item">
+              <label>Issue</label>
+              <div class="info-box">ball cannot maintain air pressure</div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <label>Details</label>
+            <div class="info-box large">
+              The Swiss Ball was found to be deflated despite repeated
+              inflation. Upon inspection, the valve appears to be loose or
+              damaged, causing air to leak continuously. Requires replacement of
+              valve or full replacement of the ball.
+            </div>
+          </div>
+          <div class="status-display">
+            <label>Status</label>
+            <div class="status-label">
+              <span class="status-dot in-progress"></span>
+              In Progress
+            </div>
+          </div>
+          <hr />
+          <div class="submitted-by">
+            <h3>Submitted By</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>User ID</label>
+                <div class="info-box">200402</div>
+              </div>
+              <div class="info-item">
+                <label>User Name</label>
+                <div class="info-box">NURUL FARISHA JAMAL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="right-request-detail">
+          <div class="main-img">
+            <img src="physiocare-logo.png" alt="Main image" />
+          </div>
+          <p>Additional Images</p>
+          <div class="thumbnail">
+            <img src="physiocare-logo.png" alt="Thumbnail" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-placeholder").innerHTML = data;
+        });
+    </script>
+  </body>
+</html>
