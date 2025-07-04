@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Handle Maintenance Request</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+  </head>
+  <body>
+    <!-- Placeholder untuk sidebar -->
+    <div id="sidebar-placeholder"></div>
+
+    <div class="main-content">
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text"
+            >Admin <i class="fas fa-chevron-down text-base"></i
+          ></span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+      <div class="table-container">
+        <div class="table-title">
+          <span class="handle-maintenance-title">Maintenance Request</span>
+          <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              placeholder="Search"
+              class="search-input"
+              id="search-input"
+            />
+          </div>
+          <button class="filter-btn">
+            <i class="fas fa-filter"></i> Filter
+          </button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Request ID</th>
+              <th>User ID</th>
+              <th>User Name</th>
+              <th>Status</th>
+              <th>Equipment</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <script>
+      // sidebar
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-placeholder").innerHTML = data;
+        });
+
+      // Fetch data request dari server
+      fetch("get_request.php")
+        .then((response) => response.json())
+        .then((data) => {
+          const tbody = document.querySelector("tbody");
+          tbody.innerHTML = ""; // Kosongkan jadual
+
+          data.forEach((row, index) => {
+            tbody.innerHTML += `
+          <tr data-row-id="${row.requestID}">
+            <td>${index + 1}.</td>
+            <td>${row.requestID}</td>
+            <td>${row.userID}</td>
+            <td>${row.userName}</td>
+            <td class="status-cell">
+              <div class="status-indicator ${row.status
+                .toLowerCase()
+                .replace(" ", "-")}"></div>
+              <span class="status-text">${row.status}</span>
+            </td>
+            <td>${row.itemName || "N/A"}</td>
+            <td class="action-buttons">
+              <i class="fa view fa-eye" aria-hidden="true" data-requestid="${
+                row.requestID
+              }"></i>
+              <i class="fa edit fa-pencil" aria-hidden="true" data-requestid="${
+                row.requestID
+              }"></i>
+              <i class="fa delete fa-trash" aria-hidden="true" data-requestid="${
+                row.requestID
+              }"></i>
+            </td>
+          </tr>
+        `;
+          });
+
+          // View button
+          document.querySelectorAll(".fa.view").forEach((icon) => {
+            icon.addEventListener("click", function () {
+              const requestID = this.getAttribute("data-requestid");
+              window.location.href = `view maintenance request.html?requestID=${requestID}`;
+            });
+          });
+
+          // Edit button
+          document.querySelectorAll(".fa.edit").forEach((icon) => {
+            icon.addEventListener("click", function () {
+              const requestID = this.getAttribute("data-requestid");
+              window.location.href = `edit maintenance request.html?requestID=${requestID}`;
+            });
+          });
+
+          // Delete button
+          document.querySelectorAll(".fa.delete").forEach((icon) => {
+            icon.addEventListener("click", function () {
+              const requestID = this.getAttribute("data-requestid");
+
+              const confirmDelete = confirm(
+                `Are you sure you want to delete request ID ${requestID}?`
+              );
+
+              if (confirmDelete) {
+                fetch(`delete_request.php?requestID=${requestID}`, {
+                  method: "GET",
+                })
+                  .then((response) => response.text())
+                  .then((result) => {
+                    if (result.trim() === "success") {
+                      const row = document.querySelector(
+                        `tr[data-row-id="${requestID}"]`
+                      );
+                      if (row) row.remove();
+                      alert("Request successfully deleted.");
+                    } else {
+                      alert("Failed to delete the request.");
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Delete error:", error);
+                    alert("An error occurred during deletion.");
+                  });
+              }
+            });
+          });
+        })
+        .catch((error) => console.error("Error loading requests:", error));
+
+      document
+        .getElementById("search-input")
+        .addEventListener("input", function () {
+          const searchTerm = this.value.toLowerCase();
+          const rows = document.querySelectorAll("tbody tr");
+
+          rows.forEach((row) => {
+            const rowText = row.textContent.toLowerCase();
+            if (rowText.includes(searchTerm)) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          });
+        });
+    </script>
+  </body>
+</html>

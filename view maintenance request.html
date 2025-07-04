@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Maintenance Request Details</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div id="sidebar-placeholder"></div>
+
+    <div class="main-content">
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text">
+            Admin <i class="fas fa-chevron-down text-base"></i>
+          </span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+
+      <div class="header-title-wrapper">
+        <div class="maintenance-title">Maintenance Request</div>
+        <div class="btn-holder">
+          <button class="btn back" onclick="window.history.back();">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <button class="btn big-delete" id="delete-btn">
+            <i class="fas fa-trash-alt"></i> Delete
+          </button>
+        </div>
+      </div>
+
+      <div class="request-detail-wrapper">
+        <div class="left-request-detail">
+          <h2>Equipment Maintenance Details</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Request ID</label>
+              <div class="info-box" id="request-id">Loading...</div>
+            </div>
+            <div class="info-item">
+              <label>Equipment</label>
+              <div class="info-box" id="equipment">Loading...</div>
+            </div>
+            <div class="info-item">
+              <label>Date Submitted</label>
+              <div class="info-box" id="date-submitted">Loading...</div>
+            </div>
+            <div class="info-item">
+              <label>Issue</label>
+              <div class="info-box" id="issue">Loading...</div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <label>Details</label>
+            <div class="info-box large" id="details">Loading...</div>
+          </div>
+
+          <div class="status-display">
+            <label>Status</label>
+            <div class="status-label" id="status">Loading...</div>
+          </div>
+
+          <hr />
+
+          <div class="submitted-by">
+            <h3>Submitted By</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>User ID</label>
+                <div class="info-box" id="user-id">Loading...</div>
+              </div>
+              <div class="info-item">
+                <label>User Name</label>
+                <div class="info-box" id="user-name">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-request-detail">
+          <div class="main-img">
+            <img
+              id="equipment-img"
+              src="images/placeholder.jpg"
+              alt="Equipment Image"
+              onclick="openModal(this.src)"
+            />
+          </div>
+
+          <p>Additional Images</p>
+          <div class="thumbnail" id="additional-thumbnails">
+            <p>Loading thumbnails...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- viewing image -->
+    <div id="imgModal" class="modal" onclick="closeModal()">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <img class="modal-content" id="modalImage" />
+    </div>
+
+    <script>
+      // Load sidebar
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-placeholder").innerHTML = data;
+        });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestID = urlParams.get("requestID");
+
+      if (requestID) {
+        fetch(`get_request_detail.php?requestID=${requestID}`)
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("request-id").textContent = data.requestID;
+            document.getElementById("equipment").textContent =
+              data.itemName || "N/A";
+            document.getElementById("date-submitted").textContent =
+              data.dateSubmitted;
+            document.getElementById("issue").textContent =
+              data.itemIssue || "N/A";
+            document.getElementById("details").textContent =
+              data.detailsMaintenance || "N/A";
+            document.getElementById("user-id").textContent = data.userID;
+            document.getElementById("user-name").textContent = data.userName;
+
+            const statusDot = `<span class="status-dot ${data.status
+              .toLowerCase()
+              .replace(" ", "-")}"></span>`;
+            document.getElementById(
+              "status"
+            ).innerHTML = `${statusDot} ${data.status}`;
+
+            const mainImage = data.itemImage
+              ? `images/${data.itemImage}`
+              : "images/placeholder.jpg";
+            document.getElementById("equipment-img").src = mainImage;
+
+            const thumbnails = document.getElementById("additional-thumbnails");
+            thumbnails.innerHTML = "";
+
+            if (data.images && data.images.length > 0) {
+              data.images.forEach((img) => {
+                const thumb = document.createElement("img");
+                thumb.src = `images/${img}`;
+                thumb.alt = "Thumbnail";
+                thumb.className = "thumbnail-img";
+                thumb.onclick = () => openModal(thumb.src);
+                thumbnails.appendChild(thumb);
+              });
+            } else {
+              thumbnails.innerHTML = "<p>No additional images.</p>";
+            }
+          })
+          .catch((err) => {
+            console.error("Error loading request detail:", err);
+            alert("Failed to load request detail.");
+          });
+
+        document
+          .getElementById("delete-btn")
+          .addEventListener("click", function () {
+            const confirmDelete = confirm(
+              "Are you sure you want to delete this maintenance request?"
+            );
+            if (confirmDelete) {
+              fetch(`delete_request.php?requestID=${requestID}`, {
+                method: "GET",
+              })
+                .then((res) => res.text())
+                .then(() => {
+                  alert("Request deleted successfully.");
+                  window.location.href = "handle maintenance request.html";
+                })
+                .catch((err) => {
+                  console.error("Error deleting request:", err);
+                  alert("Failed to delete request.");
+                });
+            }
+          });
+      } else {
+        alert("No request ID provided in URL.");
+      }
+
+      function openModal(src) {
+        document.getElementById("modalImage").src = src;
+        document.getElementById("imgModal").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("imgModal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

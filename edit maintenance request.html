@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Maintenance Request</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+  </head>
+  <body>
+    <!-- sidebar -->
+    <div id="sidebar-placeholder"></div>
+
+    <div class="main-content">
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text">
+            Admin <i class="fas fa-chevron-down text-base"></i>
+          </span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+
+      <div class="header-title-wrapper">
+        <div class="maintenance-title">Edit Maintenance Request</div>
+        <div class="btn-holder">
+          <button class="btn back" onclick="window.history.back();">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <button class="btn save" id="save-btn">
+            <i class="fas fa-save"></i> Save
+          </button>
+        </div>
+      </div>
+
+      <div class="request-detail-wrapper">
+        <div class="left-request-detail">
+          <h2>Equipment Maintenance Details</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Request ID</label>
+              <div class="info-box" id="request-id">Loading...</div>
+            </div>
+            <div class="info-item">
+              <label>Equipment</label>
+              <div class="info-box" id="equipment">Loading...</div>
+            </div>
+            <div class="info-item">
+              <label>Date Submitted</label>
+              <div class="info-box" id="date-submitted">Loading...</div>
+            </div>
+            <div class="info-item">
+              <label>Issue</label>
+              <div class="info-box" id="issue">Loading...</div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <label>Details</label>
+            <div class="info-box large" id="details">Loading...</div>
+          </div>
+
+          <div class="status-section">
+            <label>Status</label>
+            <select class="status-dropdown" id="status">
+              <option>In Process</option>
+              <option>Pending</option>
+              <option>In Progress</option>
+              <option>Completed</option>
+            </select>
+          </div>
+
+          <hr />
+
+          <div class="submitted-by">
+            <h3>Submitted By</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>User ID</label>
+                <div class="info-box" id="user-id">Loading...</div>
+              </div>
+              <div class="info-item">
+                <label>User Name</label>
+                <div class="info-box" id="user-name">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-request-detail">
+          <div class="main-img">
+            <img
+              src="images/placeholder.jpg"
+              id="equipment-img"
+              alt="Main image"
+              onclick="openModal(this.src)"
+            />
+          </div>
+          <p>Additional Images</p>
+          <div class="thumbnail" id="additional-image">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- viewing image -->
+    <div id="imgModal" class="modal" onclick="closeModal()">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="modalImage" />
+    </div>
+
+    <script>
+      // Load sidebar
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-placeholder").innerHTML = data;
+        });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestID = urlParams.get("requestID");
+
+      if (requestID) {
+        fetch(`get_request_detail.php?requestID=${requestID}`)
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("request-id").textContent = data.requestID;
+            document.getElementById("equipment").textContent =
+              data.itemName || "N/A";
+            document.getElementById("date-submitted").textContent =
+              data.dateSubmitted;
+            document.getElementById("issue").textContent =
+              data.itemIssue || "N/A";
+            document.getElementById("details").textContent =
+              data.detailsMaintenance || "N/A";
+            document.getElementById("user-id").textContent = data.userID;
+            document.getElementById("user-name").textContent = data.userName;
+            document.getElementById("status").value = data.status;
+
+            // Main image
+            const mainImage = data.itemImage
+              ? `images/${data.itemImage}`
+              : "images/placeholder.jpg";
+            const equipmentImg = document.getElementById("equipment-img");
+            equipmentImg.src = mainImage;
+            equipmentImg.onclick = () => openModal(mainImage);
+
+            // Additional thumbnails
+            const imageContainer = document.getElementById("additional-image");
+            imageContainer.innerHTML = "";
+            if (data.images && data.images.length > 0) {
+              data.images.forEach((img) => {
+                const imgTag = document.createElement("img");
+                imgTag.src = `images/${img}`;
+                imgTag.alt = "Additional image";
+                imgTag.classList.add("thumbnail-img");
+                imgTag.onclick = () => openModal(imgTag.src);
+                imageContainer.appendChild(imgTag);
+              });
+            }
+          })
+          .catch((err) => {
+            console.error("Error loading request detail:", err);
+            alert("Failed to load request detail.");
+          });
+
+        // Save button
+        document
+          .getElementById("save-btn")
+          .addEventListener("click", function () {
+            const status = document.getElementById("status").value;
+            const formData = new FormData();
+            formData.append("requestID", requestID);
+            formData.append("status", status);
+
+            fetch("update_request.php", {
+              method: "POST",
+              body: formData,
+            })
+              .then((response) => response.text())
+              .then((data) => {
+                alert("Status updated successfully!");
+                window.location.href = "handle maintenance request.html";
+              })
+              .catch((err) => {
+                console.error("Error updating status:", err);
+                alert("Failed to update status.");
+              });
+          });
+      } else {
+        alert("No request ID provided in URL.");
+      }
+
+      function openModal(src) {
+        document.getElementById("modalImage").src = src;
+        document.getElementById("imgModal").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("imgModal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
