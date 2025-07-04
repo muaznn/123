@@ -4,10 +4,14 @@
     <meta charset="UTF-8" />
     <title>Handle Maintenance Request</title>
     <link rel="stylesheet" href="style.css" />
+<<<<<<< HEAD
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
+=======
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+>>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
     </style>
@@ -31,12 +35,16 @@
           <span class="handle-maintenance-title">Maintenance Request</span>
           <div class="search-container">
             <i class="fas fa-search"></i>
+<<<<<<< HEAD
             <input
               type="text"
               placeholder="Search"
               class="search-input"
               id="search-input"
             />
+=======
+            <input type="text" placeholder="Search" class="search-input" />
+>>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
           </div>
           <button class="filter-btn">
             <i class="fas fa-filter"></i> Filter
@@ -54,17 +62,74 @@
               <th>Action</th>
             </tr>
           </thead>
+<<<<<<< HEAD
           <tbody></tbody>
+=======
+          <tbody>
+            <tr>
+              <td>1.</td>
+              <td>123456</td>
+              <td>240504</td>
+              <td>NURUL FARISHA JAMAL</td>
+              <td class="status-cell">
+                <div class="status-indicator pending"></div>
+                <span class="status-text pending">Pending</span>
+              </td>
+              <td>Dumbbell</td>
+              <td class="action-buttons">
+                <i class="fa view fa-eye" aria-hidden="true"></i>
+                <i class="fa edit fa-pencil" aria-hidden="true"></i>
+                <i class="fa delete fa-trash" aria-hidden="true"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>2.</td>
+              <td>567890</td>
+              <td>200402</td>
+              <td>NUR AISYA AFIZI</td>
+              <td class="status-cell">
+                <div class="status-indicator completed"></div>
+                <span class="status-text pending">Complete</span>
+              </td>
+              <td>Treadmill</td>
+              <td class="action-buttons">
+                <i class="fa view fa-eye" aria-hidden="true"></i>
+                <i class="fa edit fa-pencil" aria-hidden="true"></i>
+                <i class="fa delete fa-trash" aria-hidden="true"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>3.</td>
+              <td>987654</td>
+              <td>230604</td>
+              <td>FARISHA JAMAL 2</td>
+              <td class="status-cell">
+                <div class="status-indicator in-progress"></div>
+                <span class="status-text pending">In Progress</span>
+              </td>
+              <td>Swiss Ball</td>
+              <td class="action-buttons">
+                <i class="fa view fa-eye" aria-hidden="true"></i>
+                <i class="fa edit fa-pencil" aria-hidden="true"></i>
+                <i class="fa delete fa-trash" aria-hidden="true"></i>
+              </td>
+            </tr>
+          </tbody>
+>>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
         </table>
       </div>
     </div>
     <script>
+<<<<<<< HEAD
       // sidebar
+=======
+>>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
       fetch("sidebar.html")
         .then((response) => response.text())
         .then((data) => {
           document.getElementById("sidebar-placeholder").innerHTML = data;
         });
+<<<<<<< HEAD
 
       // Fetch data request dari server
       fetch("get_request.php")
@@ -168,6 +233,8 @@
             }
           });
         });
+=======
+>>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
     </script>
   </body>
 </html>

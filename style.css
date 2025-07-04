@@ -417,6 +417,7 @@ hr {
   margin-bottom: 30px;
 }
 
+<<<<<<< HEAD
 .thumbnail {
   display: flex;
   gap: 15px;
@@ -428,6 +429,14 @@ hr {
   border: 1px solid #545454;
   border-radius: 6px;
   object-fit: contain;
+=======
+.thumbnail img {
+  width: 90%;
+  height: 90%;
+  border: 1px solid #545454;
+  border-radius: 6px;
+  object-fit: cover;
+>>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
   padding: 10px;
 }
 
@@ -451,6 +460,7 @@ hr {
 .status-dot {
   width: 12px;
   height: 12px;
+<<<<<<< HEAD
   border-radius: 9999px;
 }
 
@@ -493,4 +503,11 @@ hr {
   font-size: 40px;
   font-weight: bold;
   cursor: pointer;
+=======
+  border-radius: 50%;
+}
+
+.status-dot.in-progress {
+  background-color: #1d4ed8; /* Blue */
+>>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
 }
