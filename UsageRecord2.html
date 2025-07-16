@@ -23,9 +23,21 @@
           <i class="far fa-user-circle cursor-pointer"></i>
         </div>
       </header>
+
+      <div class="header-title-wrapper">
+        <div class="tableUsage-title">
+            <button class="btn back"><i class="fas fa-arrow-left"></i> Cancel</button>
+        </div>
+        <div class="btn-holder">
+            <button class="btn add"><i class="bi bi-plus-lg"></i> Add Item</button>
+            <button class="btn save"><i class="fas fa-save"></i> Save</button>
+        </div>
+        
+      </div>
+
       <div class="table-container">
         <div class="table-title">
-          <span class="handle-maintenance-title">Inventory List</span>
+          <span class="handle-maintenance-title">Usage Record</span>
           <div class="search-container">
             <i class="fas fa-search"></i>
             <input type="text" placeholder="Search" class="search-input" />
@@ -40,6 +52,7 @@
               <th>No.</th>
               <th>Product Code</th>
               <th>Prodct Name</th>
+              <th>Quantity</th>
               <th>Action</th>
               
             </tr>
@@ -49,20 +62,43 @@
               <td>1.</td>
               <td>C023</td>
               <td>Hot Gel</td>
+              <td>2</td>
               <td class="action-buttons">
-                <button class="blue-button">Select</button>
+                <i class="fa view fa-eye" aria-hidden="true"></i>
+                <i class="fa edit fa-pencil" aria-hidden="true"></i>
+                <i class="fa delete fa-trash" aria-hidden="true"></i>
               </td>
             </tr>
             <tr>
               <td>2.</td>
               <td>T870</td>
               <td>Glove</td>
+              <td>10</td>
               <td class="action-buttons">
-                <button class="blue-button">Select</button>
+                <i class="fa view fa-eye" aria-hidden="true"></i>
+                <i class="fa edit fa-pencil" aria-hidden="true"></i>
+                <i class="fa delete fa-trash" aria-hidden="true"></i>
               </td>
             </tr>
             
           </tbody>
+
+          <!-- Modal HTML -->
+            <div class="modal-overlay" id="confirmModal" style="display: none;">
+            <div class="modal-content">
+                <button class="close-button" onclick="closeModal()">×</button>
+                <h2 class="modal-title">Are you sure you want to submit this record?</h2>
+                <div class="modal-buttons">
+                <button class="btn cancel" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn submit" onclick="submitRecord()">
+                    <i class="fas fa-save"></i> Submit
+                </button>
+                </div>
+            </div>
+            </div>
+
         </table>
       </div>
     </div>
@@ -73,5 +109,17 @@
           document.getElementById("sidebar-placeholder").innerHTML = data;
         });
     </script>
+    <script>
+    function closeModal() {
+        document.getElementById('confirmModal').style.display = 'none';
+    }
+
+    function submitRecord() {
+        // Put your submit logic here!
+        alert('Record submitted!');
+        closeModal();
+    }
+    </script>
+
   </body>
 </html>
