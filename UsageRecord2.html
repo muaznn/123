@@ -3,11 +3,138 @@
   <head>
     <meta charset="UTF-8" />
     <title>Record Usage</title>
+    
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
-    </style>
+   <style>
+  @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  .modal-overlay.hidden {
+    display: none;
+  }
+
+  .modal-box {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 520px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    position: relative;
+    text-align: center;
+    animation: fadeInScale 0.3s ease;
+  }
+
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .modal-icon {
+    font-size: 60px;
+    color: #ffc107;
+    margin-bottom: 15px;
+  }
+
+  .modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #333;
+  }
+
+  .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .modal-buttons .btn {
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+  }
+
+  .modal-buttons .cancel {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  .modal-buttons .submit {
+    background: #4caf50;
+    color: white;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #888;
+  }
+
+   /* Success notification styles */
+  .success-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #4caf50;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+  }
+
+  .success-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .success-notification i {
+    font-size: 18px;
+  }
+
+  .success-notification .message {
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  
+</style>
+
   </head>
   <body>
     <!-- Placeholder untuk sidebar -->
@@ -26,11 +153,12 @@
 
       <div class="header-title-wrapper">
         <div class="tableUsage-title">
-            <button class="btn back"><i class="fas fa-arrow-left"></i> Cancel</button>
+            <button class="btn back" onclick="openCancelModal()"><i class="fas fa-arrow-left"></i> Cancel</button>
         </div>
         <div class="btn-holder">
-            <button class="btn add"><i class="bi bi-plus-lg"></i> Add Item</button>
-            <button class="btn save"><i class="fas fa-save"></i> Save</button>
+            <button class="btn add"  onclick="window.location.href='recordUsage.html'"><i class="bi bi-plus-lg"></i> Add Item</button>
+            <button class="btn save"  onclick="openModal()"><i class="fas fa-save"></i> Save</button>
+            
         </div>
         
       </div>
@@ -57,69 +185,415 @@
               
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>1.</td>
-              <td>C023</td>
-              <td>Hot Gel</td>
-              <td>2</td>
-              <td class="action-buttons">
-                <i class="fa view fa-eye" aria-hidden="true"></i>
-                <i class="fa edit fa-pencil" aria-hidden="true"></i>
-                <i class="fa delete fa-trash" aria-hidden="true"></i>
-              </td>
-            </tr>
-            <tr>
-              <td>2.</td>
-              <td>T870</td>
-              <td>Glove</td>
-              <td>10</td>
-              <td class="action-buttons">
-                <i class="fa view fa-eye" aria-hidden="true"></i>
-                <i class="fa edit fa-pencil" aria-hidden="true"></i>
-                <i class="fa delete fa-trash" aria-hidden="true"></i>
-              </td>
-            </tr>
+          <tbody id="usage-record-body">
+            
+             <tr><td colspan="5">Loading...</td></tr>
             
           </tbody>
 
-          <!-- Modal HTML -->
-            <div class="modal-overlay" id="confirmModal" style="display: none;">
-            <div class="modal-content">
-                <button class="close-button" onclick="closeModal()">×</button>
-                <h2 class="modal-title">Are you sure you want to submit this record?</h2>
-                <div class="modal-buttons">
-                <button class="btn cancel" onclick="closeModal()">
-                    <i class="fas fa-times"></i> Cancel
-                </button>
-                <button class="btn submit" onclick="submitRecord()">
-                    <i class="fas fa-save"></i> Submit
-                </button>
-                </div>
-            </div>
-            </div>
-
         </table>
       </div>
+      
     </div>
-    <script>
-      fetch("sidebar.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("sidebar-placeholder").innerHTML = data;
-        });
-    </script>
-    <script>
-    function closeModal() {
-        document.getElementById('confirmModal').style.display = 'none';
-    }
 
-    function submitRecord() {
-        // Put your submit logic here!
-        alert('Record submitted!');
-        closeModal();
+    <div class="modal-overlay hidden" id="confirmModal">
+      <div class="modal-box">
+        <button class="close-btn" onclick="closeModal()">×</button>
+        <div class="modal-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h2 class="modal-title">Are you sure you want to submit this record?</h2>
+        <div class="modal-buttons">
+          <button class="btn cancel" onclick="closeModal()">Cancel</button>
+          <button class="btn submit" onclick="submitRecord()">
+            <i class="fas fa-check-circle"></i> Submit
+          </button>
+        </div>
+      </div>
+    </div>
+
+     <!-- Success Notification -->
+    <div class="success-notification" id="successNotification">
+      <i class="fas fa-check-circle"></i>
+      <span class="message">Your usage record submitted successfully!</span>
+    </div>
+
+   <!-- Cancel Confirmation Modal -->
+    <div class="modal-overlay hidden" id="cancelModal">
+      <div class="modal-box cancel-modal-box">
+        <button class="close-btn" onclick="closeCancelModal()">×</button>
+        <div class="modal-icon">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h2 class="modal-title">Are you sure you want to cancel?</h2>
+        <div class="modal-buttons">
+          <button class="btn cancel" onclick="closeCancelModal()">No</button>
+          <button class="btn submit" onclick="cancelRecord()">
+            <i class="fas fa-trash"></i> Yes, Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay hidden" id="deleteModal">
+      <div class="modal-box">
+        <button class="close-btn" onclick="closeDeleteModal()">×</button>
+        <div class="modal-icon">
+          <i class="fas fa-exclamation-triangle" style="color: #ff5252;"></i>
+        </div>
+        <h2 class="modal-title">Are you sure you want to delete this record?</h2>
+        <p style="margin-bottom: 20px; color: #666;">This action cannot be undone.</p>
+        <div class="modal-buttons">
+          <button class="btn cancel" onclick="closeDeleteModal()">Cancel</button>
+          <button class="btn submit" onclick="confirmDelete()" style="background-color: #ff5252;">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    
+     <!-- Scripts -->
+<script>
+  // Load sidebar
+  fetch("sidebarTherapist.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("sidebar-placeholder").innerHTML = data;
+    });
+
+    //fetch and display usage record
+   fetch("UsageRecord2.php")
+        .then(response => {
+          if (!response.ok) throw new Error("Network error: " + response.statusText);
+          return response.json();
+        })
+        .then(data => {
+          const tableBody = document.getElementById("usage-record-body");
+          tableBody.innerHTML = "";
+
+          if (!Array.isArray(data) || data.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='5'>No data available</td></tr>";
+            return;
+          }
+
+          data.forEach((item, index) => {
+            const row = `
+              <tr>
+                <td>${index + 1}.</td>
+                <td>${item.code}</td>
+                <td>${item.name}</td>
+                <td>${item.quantityUsed}</td>
+                <td class="action-buttons">
+                  <i class="fa fa-pencil edit" 
+                    data-usageid="${item.usageID}" 
+                    data-itemid="${item.code}"
+                    style="cursor:pointer;"></i>
+                  <i class="fa fa-trash delete"></i>
+                </td>
+              </tr>`;
+            tableBody.innerHTML += row;
+          });
+
+          // In your event listener:
+          tableBody.addEventListener('click', function(e) {
+            if (e.target.classList.contains('edit')) {
+              const usageID = e.target.getAttribute('data-usageid');
+              const itemID = e.target.getAttribute('data-itemid');
+              console.log("Editing:", {usageID, itemID});
+              window.location.href = `EditUsageRecord.html?usageID=${encodeURIComponent(usageID)}&itemID=${encodeURIComponent(itemID)}`;
+            }
+          });
+
+          initializeSearch();
+        })
+        .catch(error => {
+          console.error("Fetch error:", error);
+          document.getElementById("usage-record-body").innerHTML =
+            "<tr><td colspan='5'>Failed to load data.</td></tr>";
+        });
+
+  document.getElementById('usage-record-body').addEventListener('click', function(e) {
+  if (e.target.classList.contains('edit')) {
+    const itemID = e.target.getAttribute('data-itemid');
+    const quantity = e.target.getAttribute('data-quantity');
+    
+    window.location.href = `AddUsageRecord.html?itemID=${itemID}&quantity=${quantity}`;
+  }
+});
+
+
+
+     // Search function for usage records
+  function initializeSearch() {
+    const searchInput = document.querySelector('.search-input');
+    const tableBody = document.getElementById('usage-record-body');
+    
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase().trim();
+      const rows = tableBody.querySelectorAll('tr');
+      
+      rows.forEach(row => {
+        // Skip if it's a "no data" or "loading" row
+        if (row.cells.length < 5) {
+          return;
+        }
+        
+        const productCode = row.cells[1].textContent.toLowerCase();
+        const productName = row.cells[2].textContent.toLowerCase();
+        const quantity = row.cells[3].textContent.toLowerCase();
+        
+        // Check if search term matches any column
+        const matches = productCode.includes(searchTerm) || 
+                       productName.includes(searchTerm) || 
+                       quantity.includes(searchTerm);
+        
+        // Show/hide row based on match
+        if (matches || searchTerm === '') {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+      
+      // Show "no results" message if no rows are visible
+      const visibleRows = Array.from(rows).filter(row => 
+        row.style.display !== 'none' && row.cells.length >= 5
+      );
+      
+      if (visibleRows.length === 0 && searchTerm !== '') {
+        // Remove existing no results row
+        const existingNoResults = tableBody.querySelector('.no-results-row');
+        if (existingNoResults) {
+          existingNoResults.remove();
+        }
+        
+        // Add no results row
+        const noResultsRow = document.createElement('tr');
+        noResultsRow.className = 'no-results-row';
+        noResultsRow.innerHTML = '<td colspan="5" style="text-align: center; color: #666;">No records found. </td>';
+        tableBody.appendChild(noResultsRow);
+      } else {
+        // Remove no results row if it exists
+        const existingNoResults = tableBody.querySelector('.no-results-row');
+        if (existingNoResults) {
+          existingNoResults.remove();
+        }
+      }
+    });
+  }
+
+  // Clear search function
+  function clearSearch() {
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+      searchInput.value = '';
+      searchInput.dispatchEvent(new Event('input'));
     }
-    </script>
+  }
+
+  // Open and close submit confirmation modal
+  function openModal() {
+    document.getElementById("confirmModal").classList.remove("hidden");
+  }
+
+  function closeModal() {
+    document.getElementById("confirmModal").classList.add("hidden");
+  }
+
+  // Submit record
+  function submitRecord() {
+    closeModal();
+
+    fetch("UsageRecord2.php?resetUsageID=true")
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          showSuccessNotification();
+          setTimeout(() => {
+            window.location.href = "recordUsage.html";
+          }, 1500);
+        } else {
+          alert("Failed to submit record: " + data.message);
+        }
+      })
+      .catch(err => {
+        console.error("Submit error:", err);
+        alert("An error occurred while submitting.");
+      });
+  }
+
+  // Open and close cancel confirmation modal
+  function openCancelModal() {
+    document.getElementById("cancelModal").classList.remove("hidden");
+  }
+
+  function closeCancelModal() {
+    document.getElementById("cancelModal").classList.add("hidden");
+  }
+
+  // Cancel record
+  function cancelRecord() {
+    fetch("UsageRecord2.php", {
+      method: "POST"
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert("Record cancelled successfully.");
+          window.location.href = "recordUsage.html";
+        } else {
+          alert("Failed to cancel record: " + (data.message || "Unknown error"));
+        }
+      })
+      .catch(error => {
+        console.error("Cancel error:", error);
+        alert("An error occurred while cancelling.");
+      });
+  }
+
+  // Success notification
+  function showSuccessNotification() {
+    const notification = document.getElementById("successNotification");
+    notification.classList.add("show");
+    setTimeout(() => notification.classList.remove("show"), 3000);
+  }
+
+  // Escape key and click outside modals
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      closeModal();
+      closeCancelModal();
+    }
+  });
+
+  document.addEventListener("click", function (event) {
+    const confirmModal = document.getElementById("confirmModal");
+    const cancelModal = document.getElementById("cancelModal");
+    const modalBoxes = document.querySelectorAll(".modal-box");
+
+    if (event.target === confirmModal) closeModal();
+    if (event.target === cancelModal) closeCancelModal();
+  });
+
+
+  // Delete functionality
+  let currentDeleteUsageID = null;
+  let currentDeleteItemID = null;
+
+  function openDeleteModal(usageID, itemID) {
+      currentDeleteUsageID = usageID;
+      currentDeleteItemID = itemID;
+      document.getElementById("deleteModal").classList.remove("hidden");
+  }
+
+  function closeDeleteModal() {
+      document.getElementById("deleteModal").classList.add("hidden");
+  }
+
+  function confirmDelete() {
+      if (!currentDeleteUsageID || !currentDeleteItemID) {
+          alert("Error: No record selected for deletion");
+          closeDeleteModal();
+          return;
+      }
+
+      fetch(`DeleteUsageRecord.php?usageID=${currentDeleteUsageID}&itemID=${currentDeleteItemID}`, {
+          method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              showSuccessNotification("Record deleted successfully!");
+              // Refresh the table
+              fetchUsageRecords();
+          } else {
+              alert("Failed to delete record: " + (data.message || "Unknown error"));
+          }
+          closeDeleteModal();
+      })
+      .catch(error => {
+          console.error("Delete error:", error);
+          alert("An error occurred while deleting.");
+          closeDeleteModal();
+      });
+  }
+
+  // Update the table row generation to include delete button
+  function fetchUsageRecords() {
+      fetch("UsageRecord2.php")
+          .then(response => {
+              if (!response.ok) throw new Error("Network error: " + response.statusText);
+              return response.json();
+          })
+          .then(data => {
+              const tableBody = document.getElementById("usage-record-body");
+              tableBody.innerHTML = "";
+
+              if (!Array.isArray(data) || data.length === 0) {
+                  tableBody.innerHTML = "<tr><td colspan='5'>No data available</td></tr>";
+                  return;
+              }
+
+              data.forEach((item, index) => {
+                  const row = `
+                      <tr>
+                          <td>${index + 1}.</td>
+                          <td>${item.code}</td>
+                          <td>${item.name}</td>
+                          <td>${item.quantityUsed}</td>
+                          <td class="action-buttons">
+                              <i class="fa fa-pencil edit" 
+                                  data-usageid="${item.usageID}" 
+                                  data-itemid="${item.code}"
+                                  style="cursor:pointer;"></i>
+                              <i class="fa fa-trash delete" 
+                                  data-usageid="${item.usageID}"
+                                  data-itemid="${item.code}"
+                                  style="cursor:pointer;"></i>
+                          </td>
+                      </tr>`;
+                  tableBody.innerHTML += row;
+              });
+
+              // Add click handler for delete buttons
+              tableBody.addEventListener('click', function(e) {
+                  if (e.target.classList.contains('delete')) {
+                      const usageID = e.target.getAttribute('data-usageid');
+                      const itemID = e.target.getAttribute('data-itemid');
+                      openDeleteModal(usageID, itemID);
+                  }
+              });
+
+              initializeSearch();
+          })
+          .catch(error => {
+              console.error("Fetch error:", error);
+              document.getElementById("usage-record-body").innerHTML =
+                  "<tr><td colspan='5'>Failed to load data.</td></tr>";
+          });
+  }
+
+  // Update success notification to accept custom messages
+  function showSuccessNotification(message = "Your usage record submitted successfully!") {
+      const notification = document.getElementById("successNotification");
+      notification.querySelector('.message').textContent = message;
+      notification.classList.add("show");
+      setTimeout(() => notification.classList.remove("show"), 3000);
+  }
+
+  // Initialize the table when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+      fetchUsageRecords();
+  });
+  </script>
 
   </body>
 </html>

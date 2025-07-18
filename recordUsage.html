@@ -28,7 +28,7 @@
           <span class="handle-maintenance-title">Inventory List</span>
           <div class="search-container">
             <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search" class="search-input" />
+            <input type="text" id="search-input" placeholder="Search" class="search-input" />
           </div>
           <button class="filter-btn">
             <i class="fas fa-filter"></i> Filter
@@ -44,34 +44,67 @@
               
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>1.</td>
-              <td>C023</td>
-              <td>Hot Gel</td>
-              <td class="action-buttons">
-                <button class="blue-button">Select</button>
-              </td>
-            </tr>
-            <tr>
-              <td>2.</td>
-              <td>T870</td>
-              <td>Glove</td>
-              <td class="action-buttons">
-                <button class="blue-button">Select</button>
-              </td>
-            </tr>
-            
+          <tbody id="inventory-table-body">
+              <tr><td colspan="4">Loading...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
     <script>
-      fetch("sidebar.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("sidebar-placeholder").innerHTML = data;
+  // Load sidebar
+  fetch("sidebarTherapist.html")
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("sidebar-placeholder").innerHTML = data;
+    });
+
+  // Function to load items with optional search
+  function loadItems(searchTerm = '') {
+    fetch('recordUsage.php?search=' + encodeURIComponent(searchTerm))
+      .then(response => response.json())
+      .then(data => {
+        const tbody = document.getElementById('inventory-table-body');
+        tbody.innerHTML = '';
+
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4">No items found.</td></tr>';
+          return;
+        }
+
+        data.forEach((item, index) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${index + 1}.</td>
+            <td>${item.itemID}</td>
+            <td>${item.itemName}</td>
+            <td class="action-buttons">
+              <button onclick="window.location.href='AddUsageRecord.html?itemID=${item.itemID}'" class="blue-button">Select</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
         });
-    </script>
+      })
+      .catch(error => {
+        console.error(error);
+        document.getElementById('inventory-table-body').innerHTML = `<tr><td colspan="4">Error loading data.</td></tr>`;
+      });
+  }
+
+  // Load all items on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    loadItems();
+  });
+
+  // Auto search as user types
+  document.getElementById('search-input').addEventListener('input', () => {
+    const searchTerm = document.getElementById('search-input').value;
+    loadItems(searchTerm);
+  });
+</script>
+
+
+
+
+
   </body>
 </html>

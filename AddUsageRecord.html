@@ -1,93 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Add Usage Record</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
-    </style>
-  </head>
-  <body>
-    <!-- Placeholder untuk sidebar -->
-    <div id="sidebar-placeholder"></div>
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Usage Record</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
 
-    <div class="main-content">
+    .success-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-30px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    .success-notification .fa-check-circle {
+      font-size: 20px;
+    }
+
+     .required-field::after {
+    content: " *";
+    color: red;
+  }
+  </style>
+</head>
+<body>
+  <div id="sidebar-placeholder"></div>
+
+  <div class="main-content">
+    <form id="usage-form">
       <header class="header-title">
         <div class="header-group">
-          <span class="admin-text"
-            >Therapist <i class="fas fa-chevron-down text-base"></i
-          ></span>
+          <span class="admin-text">Therapist <i class="fas fa-chevron-down text-base"></i></span>
           <i class="far fa-bell cursor-pointer"></i>
           <i class="far fa-user-circle cursor-pointer"></i>
         </div>
       </header>
+
       <div class="header-title-wrapper">
         <div class="tableUsage-title">
-            <span class="usage-title">Add Usage Record</span>
+          <span class="usage-title">Add Usage Record</span>
         </div>
         <div class="btn-holder">
-            <button class="btn back"><i class="fas fa-arrow-left"></i> Back</button>
-            <button class="btn save"><i class="fas fa-save"></i> Save</button>
+          <button class="btn back" type="button" onclick="location.href='recordUsage.html'"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn save" type="submit"><i class="fas fa-save"></i> Save</button>
         </div>
-        
       </div>
+
       <div class="request-detail-wrapper">
-            <div class="left-request-detail">
-                <div class="info-grid">
-                    <div class="info-item">
-                        <label>Product Code</label>
-                        <input class="info-boxUsage" type="text" id="code" name="code" placeholder="T870" disabled>
-                    </div>
+        <div class="left-request-detail">
+          <input type="hidden" id="usageID" name="usageID">
+          <input type="hidden" id="itemID" name="itemID">
 
-                    <div class="info-item">
-                        <label>Product Name</label>
-                        <input class="info-boxUsage" type="text" id="ProductName" name="ProductName" placeholder="Glove" disabled>
-                    </div>
-
-                    <div class="info-item">
-                        <label>Quantity</label>
-                        <input class="info-boxUsage" type="number" id="quantity" name="quantity" min="1" max="100" value="1" >
-
-                    </div>
-
-                    <div class="info-item">
-                        <label for="date-submitted">Date Submitted</label>
-                        <input class="info-boxUsage" type="date" id="date-submitted" name="date-submitted" value="2025-06-20">
-                    </div>
-
-                </div>
-                <div class="detail-section">
-                    <label>Notes</label>
-                    <div class="info-box large">
-                    The Swiss Ball was found to be deflated despite repeated
-                    inflation. Upon inspection, the valve appears to be loose or
-                    damaged, causing air to leak continuously. Requires replacement of
-                    valve or full replacement of the ball.
-                    </div>
-                </div>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Product Code</label>
+              <input class="info-boxUsage" type="text" id="code" name="code" placeholder="Loading..." disabled>
             </div>
-            <div class="right-request-detail">
-                <div class="main-img">
-                    <img src="glove.jpeg" alt="Main image" />
-                </div>
-                <div class="main-img">
-                    <img src="glove.jpeg" alt="Thumbnail" />
-                </div>
-                <div class="main-img">
-                    <img src="glove.jpeg" alt="Thumbnail" />
-                </div>
+
+            <div class="info-item">
+              <label>Product Name</label>
+              <input class="info-boxUsage" type="text" id="ProductName" name="ProductName" placeholder="Loading..." disabled>
             </div>
-       </div>
+
+            <div class="info-item">
+              <label  class="required-field" >Quantity</label>
+              <input class="info-boxUsage" type="number" id="quantity" name="quantity" min="1" max="100" value="1">
+            </div>
+
+            <div class="info-item">
+              <label for="date-submitted"  class="required-field">Date Submitted</label>
+              <input class="info-boxUsage" type="date" id="date-submitted" name="date-submitted"  value="<?php echo date('Y-m-d'); ?>">
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <label>Notes</label>
+            <div class="info-box large" id="description">Loading description...</div>
+          </div>
+        </div>
+
+        <div class="right-request-detail">
+          <div class="main-img">
+            <img id="main-image" src="default.jpg" alt="Main image" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Success Notification -->
+      <div class="success-notification" id="successNotification" style="display: none;">
+        <i class="fas fa-check-circle"></i>
+        <span class="message">Your usage record submitted successfully!</span>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    fetch("sidebarTherapist.html")
+      .then((response) => response.text())
+      .then((data) => {
+        document.getElementById("sidebar-placeholder").innerHTML = data;
+      });
+      
+    document.addEventListener('DOMContentLoaded', function() {
+    // Get item ID from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const itemID = urlParams.get('itemID');
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date-submitted').value = today;
     
-    </div>
-    <script>
-      fetch("sidebar.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("sidebar-placeholder").innerHTML = data;
+    if (itemID) {
+        document.getElementById('itemID').value = itemID;
+        fetchItemDetails(itemID);
+    }
+
+    // Form submission handler
+    document.getElementById('usage-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const quantity = document.getElementById('quantity');
+        const dateSubmitted = document.getElementById('date-submitted');
+        let isValid = true;
+
+        // Validate quantity
+        if (!quantity.value || quantity.value <= 0) {
+          quantity.style.border = '1px solid red';
+          isValid = false;
+        } else {
+          quantity.style.border = '';
+        }
+
+        // Validate date
+        if (!dateSubmitted.value) {
+          dateSubmitted.style.border = '1px solid red';
+          isValid = false;
+        } else {
+          dateSubmitted.style.border = '';
+        }
+
+        // If not valid, prevent submission
+        if (!isValid) {
+          e.preventDefault();
+          alert('Please fill in all required fields (marked with *)');
+        }
+
+        const formData = new FormData(this);
+        formData.append('action', 'submit');
+        
+        fetch('AddUsageRecord.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Store usageID in sessionStorage for later use if needed
+                if (data.usageID) {
+                    sessionStorage.setItem('lastUsageID', data.usageID);
+                }
+                showSuccessNotification();
+                setTimeout(() => {
+                    window.location.href = 'UsageRecord2.html';
+                }, 2000);
+            } else {
+                alert(data.message || "Error submitting record");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while submitting");
         });
-    </script>
-  </body>
+    });
+});
+
+    function fetchItemDetails(itemID) {
+      fetch('AddUsageRecord.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=fetch&itemID=${itemID}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          console.error(data.error);
+          return;
+        }
+        
+        // Update form fields with item details
+        document.getElementById('code').value = data.itemID || 'N/A';
+        document.getElementById('ProductName').value = data.itemName || 'N/A';
+        document.getElementById('description').textContent = data.description || 'No description available';
+        
+        if (data.imagePath) {
+          document.getElementById('main-image').src = data.imagePath;
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching item details:', error);
+      });
+    }
+
+    function showSuccessNotification() {
+      const notification = document.getElementById('successNotification');
+      notification.style.display = 'flex';
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
 </html>

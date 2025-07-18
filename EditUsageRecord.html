@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Usage Record</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+
+    .success-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-30px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    .success-notification .fa-check-circle {
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-placeholder"></div>
+
+  <div class="main-content">
+    <form id="usage-form">
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text">Therapist <i class="fas fa-chevron-down text-base"></i></span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+
+      <div class="header-title-wrapper">
+        <div class="tableUsage-title">
+          <span class="usage-title">Add Usage Record</span>
+        </div>
+        <div class="btn-holder">
+          <button class="btn back" type="button" onclick="location.href='UsageRecord2.html'"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn save" type="submit"><i class="fas fa-save"></i> Save</button>
+        </div>
+      </div>
+
+      <div class="request-detail-wrapper">
+        <div class="left-request-detail">
+          <input type="hidden" id="usageID" name="usageID">
+          <input type="hidden" id="itemID" name="itemID">
+
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Product Code</label>
+              <input class="info-boxUsage" type="text" id="code" name="code" placeholder="T870" disabled>
+              <input type="hidden" id="itemIDInput" name="code">
+            </div>
+
+            <div class="info-item">
+              <label>Product Name</label>
+              <input class="info-boxUsage" type="text" id="ProductName" name="ProductName" placeholder="Glove" disabled>
+            </div>
+
+            <div class="info-item">
+              <label>Quantity</label>
+              <input class="info-boxUsage" type="number" id="quantity" name="quantity" min="1" max="100" value="1">
+            </div>
+
+            <div class="info-item">
+              <label for="date-submitted">Date Submitted</label>
+              <input class="info-boxUsage" type="date" id="date-submitted" name="date-submitted">
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <label>Notes</label>
+            <div class="info-box large" id="description">Loading description...</div>
+          </div>
+        </div>
+
+        <div class="right-request-detail">
+          <div class="main-img">
+            <img id="main-image" src="default.jpg" alt="Main image" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Success Notification -->
+      <div class="success-notification" id="successNotification" style="display: none;">
+        <i class="fas fa-check-circle"></i>
+        <span class="message">Your usage record submitted successfully!</span>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    fetch("sidebarTherapist.html")
+      .then((response) => response.text())
+      .then((data) => {
+        document.getElementById("sidebar-placeholder").innerHTML = data;
+      });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const usageID = urlParams.get('usageID');
+      const itemID = urlParams.get('itemID');
+
+      if (!usageID || !itemID) {
+        alert("Missing parameters from URL!");
+        return;
+      }
+
+      // Populate form with existing data
+      fetch(`EditUsageRecord.php?usageID=${usageID}&itemID=${itemID}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            alert(data.error);
+            return;
+          }
+
+          document.getElementById('code').value = data.itemID;
+          document.getElementById('ProductName').value = data.itemName;
+          document.getElementById('quantity').value = data.quantityUsed;
+          document.getElementById('date-submitted').value = data.usageDate || new Date().toISOString().split('T')[0];
+          document.getElementById('description').textContent = data.description || 'No description provided.';
+          document.getElementById('usageID').value = usageID;
+          document.getElementById('itemID').value = itemID;
+
+          if (data.imagePath) {
+            document.getElementById('main-image').src = data.imagePath;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Error loading usage record.");
+        });
+
+      // Handle form submission
+      document.getElementById('usage-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('usageID', usageID);
+        formData.append('itemID', itemID);
+        formData.append('quantity', document.getElementById('quantity').value);
+        formData.append('date-submitted', document.getElementById('date-submitted').value);
+
+        fetch('EditUsageRecord.php', {
+          method: 'POST',
+          body: formData,
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              const notif = document.getElementById('successNotification');
+              notif.style.display = 'flex';
+
+              setTimeout(() => {
+                notif.style.display = 'none';
+                window.location.href = 'UsageRecord2.html';
+              }, 2500);
+            } else {
+              alert("❌ " + data.message);
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert("Error occurred while saving.");
+          });
+      });
+    });
+  </script>
+</body>
+</html>
