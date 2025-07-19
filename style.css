@@ -67,6 +67,11 @@ nav ul li a:hover {
   border: 1px solid var(--dark-blue);
 }
 
+nav ul li a:active {
+    background: var(--blue-hover);
+    border: 1px solid var(--dark-blue);
+}
+
 .bottom-menu {
   padding: 0px 50px 14px;
 }

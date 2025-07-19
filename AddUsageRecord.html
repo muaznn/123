@@ -35,9 +35,58 @@
     }
 
      .required-field::after {
-    content: " *";
-    color: red;
-  }
+      content: " *";
+      color: red;
+    }
+
+    .error-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #f44336;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      animation: slideDown 0.5s ease;
+    }
+
+    .error-notification .fa-exclamation-circle {
+      font-size: 20px;
+    }
+
+    .fade-out {
+      animation: fadeOut 0.5s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
+
+   #available-qty {
+  font-size: 0.75em;
+  color: #c62828; /* Deep, elegant red */
+  margin-top: 4px;
+  font-weight: 500;
+  padding: 4px 10px;
+  background-color: #ffebee; /* Very light red background */
+  border-radius: 8px;
+  display: table;
+  border: 1px solid #ef9a9a; /* Light red border */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+
+#available-qty:hover {
+  background-color: #ffcdd2; /* Slightly darker red on hover */
+  transform: translateY(-1px);
+}
   </style>
 </head>
 <body>
@@ -79,10 +128,15 @@
               <input class="info-boxUsage" type="text" id="ProductName" name="ProductName" placeholder="Loading..." disabled>
             </div>
 
-            <div class="info-item">
-              <label  class="required-field" >Quantity</label>
-              <input class="info-boxUsage" type="number" id="quantity" name="quantity" min="1" max="100" value="1">
-            </div>
+            <!-- In your quantity div, replace the simple text with: -->
+<div class="info-item">
+  <label class="required-field">Quantity</label>
+  <input class="info-boxUsage" type="number" id="quantity" name="quantity" min="1" value="1">
+  <div id="available-qty">
+    <i class="fas fa-box-open" style="margin-right: 5px;"></i>
+    <span id="qty-text">Available: 0</span>
+  </div>
+</div>
 
             <div class="info-item">
               <label for="date-submitted"  class="required-field">Date Submitted</label>
@@ -117,78 +171,98 @@
       .then((data) => {
         document.getElementById("sidebar-placeholder").innerHTML = data;
       });
+
+     document.addEventListener('DOMContentLoaded', function() {
+      // Get item ID from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const itemID = urlParams.get('itemID');
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('date-submitted').value = today;
       
-    document.addEventListener('DOMContentLoaded', function() {
-    // Get item ID from URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const itemID = urlParams.get('itemID');
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('date-submitted').value = today;
-    
-    if (itemID) {
-        document.getElementById('itemID').value = itemID;
-        fetchItemDetails(itemID);
-    }
+      if (itemID) {
+          document.getElementById('itemID').value = itemID;
+          fetchItemDetails(itemID);
+      }
 
-    // Form submission handler
-    document.getElementById('usage-form').addEventListener('submit', function(e) {
-        e.preventDefault();
+      // Quantity validation
+      document.getElementById('quantity').addEventListener('change', function() {
+        const enteredQty = parseInt(this.value);
+        const maxQty = parseInt(this.max);
         
-        const quantity = document.getElementById('quantity');
-        const dateSubmitted = document.getElementById('date-submitted');
-        let isValid = true;
-
-        // Validate quantity
-        if (!quantity.value || quantity.value <= 0) {
-          quantity.style.border = '1px solid red';
-          isValid = false;
-        } else {
-          quantity.style.border = '';
+        if (enteredQty > maxQty) {
+          showErrorNotification(`Only ${maxQty} items available!`);
+          this.value = maxQty;
         }
+      });
 
-        // Validate date
-        if (!dateSubmitted.value) {
-          dateSubmitted.style.border = '1px solid red';
-          isValid = false;
-        } else {
-          dateSubmitted.style.border = '';
-        }
-
-        // If not valid, prevent submission
-        if (!isValid) {
+      // Form submission handler
+      document.getElementById('usage-form').addEventListener('submit', function(e) {
           e.preventDefault();
-          alert('Please fill in all required fields (marked with *)');
-        }
+          
+          const quantity = document.getElementById('quantity');
+          const enteredQty = parseInt(quantity.value);
+          const maxQty = parseInt(quantity.max);
+          const dateSubmitted = document.getElementById('date-submitted');
+          let isValid = true;
 
-        const formData = new FormData(this);
-        formData.append('action', 'submit');
-        
-        fetch('AddUsageRecord.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Store usageID in sessionStorage for later use if needed
-                if (data.usageID) {
-                    sessionStorage.setItem('lastUsageID', data.usageID);
-                }
-                showSuccessNotification();
-                setTimeout(() => {
-                    window.location.href = 'UsageRecord2.html';
-                }, 2000);
-            } else {
-                alert(data.message || "Error submitting record");
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("An error occurred while submitting");
-        });
+          // Validate quantity against available stock
+          if (enteredQty > maxQty) {
+            showErrorNotification(`Cannot use more than ${maxQty} items!`);
+            quantity.focus();
+            return;
+          }
+
+          // Validate quantity
+          if (!quantity.value || quantity.value <= 0) {
+            quantity.style.border = '1px solid red';
+            isValid = false;
+          } else {
+            quantity.style.border = '';
+          }
+
+          // Validate date
+          if (!dateSubmitted.value) {
+            dateSubmitted.style.border = '1px solid red';
+            isValid = false;
+          } else {
+            dateSubmitted.style.border = '';
+          }
+
+          if (!isValid) {
+            showErrorNotification('Please fill in all required fields (marked with *)');
+            return;
+          }
+
+          const formData = new FormData(this);
+          formData.append('action', 'submit');
+          
+          fetch('AddUsageRecord.php', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  // Store usageID in sessionStorage for later use if needed
+                  if (data.usageID) {
+                      sessionStorage.setItem('lastUsageID', data.usageID);
+                  }
+                  showSuccessNotification();
+                  setTimeout(() => {
+                      window.location.href = 'UsageRecord2.html';
+                  }, 2000);
+              } else {
+                  showErrorNotification(data.message || "Error submitting record");
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              showErrorNotification("An error occurred while submitting");
+          });
+      });
     });
-});
 
+    let availableQty = 0;
     function fetchItemDetails(itemID) {
       fetch('AddUsageRecord.php', {
         method: 'POST',
@@ -201,6 +275,7 @@
       .then(data => {
         if (data.error) {
           console.error(data.error);
+          showErrorNotification(data.error);
           return;
         }
         
@@ -212,9 +287,14 @@
         if (data.imagePath) {
           document.getElementById('main-image').src = data.imagePath;
         }
+
+        availableQty = parseInt(data.availableQuantity) || 0;
+        document.getElementById('quantity').max = availableQty;
+        document.getElementById('available-qty').textContent = `Available: ${availableQty}`;
       })
       .catch(error => {
         console.error('Error fetching item details:', error);
+        showErrorNotification("Error loading item details");
       });
     }
 
@@ -223,6 +303,21 @@
       notification.style.display = 'flex';
       setTimeout(() => {
         notification.style.display = 'none';
+      }, 3000);
+    }
+
+    function showErrorNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'error-notification';
+      notification.innerHTML = `
+        <i class="fas fa-exclamation-circle"></i>
+        <span class="message">${message}</span>
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => notification.remove(), 500);
       }, 3000);
     }
   </script>

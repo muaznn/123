@@ -60,6 +60,7 @@
     font-weight: 700;
     margin-bottom: 25px;
     color: #333;
+    font-family: "Segoe UI", sans-serif;
   }
 
   .modal-buttons {
@@ -170,9 +171,9 @@
             <i class="fas fa-search"></i>
             <input type="text" placeholder="Search" class="search-input" />
           </div>
-          <button class="filter-btn">
+          <!-- <button class="filter-btn">
             <i class="fas fa-filter"></i> Filter
-          </button>
+          </button> -->
         </div>
         <table>
           <thead>
@@ -205,7 +206,7 @@
         <h2 class="modal-title">Are you sure you want to submit this record?</h2>
         <div class="modal-buttons">
           <button class="btn cancel" onclick="closeModal()">Cancel</button>
-          <button class="btn submit" onclick="submitRecord()">
+          <button class="btn submit" id="submitModalBtn" >
             <i class="fas fa-check-circle"></i> Submit
           </button>
         </div>
@@ -266,6 +267,35 @@
     .then(data => {
       document.getElementById("sidebar-placeholder").innerHTML = data;
     });
+
+    document.getElementById("submitModalBtn").addEventListener("click", function () {
+      fetch('UsageRecord2.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action: 'saveUsage' })
+      })
+      .then(response => response.json())
+      .then(data => {
+        closeModal(); 
+
+        if (data.success) {
+           showSuccessNotification("Stock updated successfully!"); 
+           setTimeout(() => {
+            window.location.href = 'recordUsage.html'; 
+          }, 1000); 
+        } else {
+          alert(data.message || "Failed to update usage");
+        }
+      })
+      .catch(error => {
+        closeModal();
+        alert("Something went wrong: " + error.message);
+      });
+    });
+
+
 
     //fetch and display usage record
    fetch("UsageRecord2.php")
@@ -408,27 +438,7 @@
     document.getElementById("confirmModal").classList.add("hidden");
   }
 
-  // Submit record
-  function submitRecord() {
-    closeModal();
-
-    fetch("UsageRecord2.php?resetUsageID=true")
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") {
-          showSuccessNotification();
-          setTimeout(() => {
-            window.location.href = "recordUsage.html";
-          }, 1500);
-        } else {
-          alert("Failed to submit record: " + data.message);
-        }
-      })
-      .catch(err => {
-        console.error("Submit error:", err);
-        alert("An error occurred while submitting.");
-      });
-  }
+  
 
   // Open and close cancel confirmation modal
   function openCancelModal() {
