@@ -5,11 +5,7 @@ header('Content-Type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Check login
-if (!isset($_SESSION['userID'])) {
-    echo json_encode(["error" => "User not logged in"]);
-    exit;
-}
+
 
 $userID = $_SESSION['userID'];
 

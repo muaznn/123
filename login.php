@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Password checking (assuming plain text for now, or use password_verify if hashed)
         if ($password === $user['password']) {
-            $_SESSION['id'] = $user['userID'];
+            $_SESSION['userID'] = $user['userID'];
             $_SESSION['name'] = $user['name'];
             $_SESSION['role'] = $user['role'];
 
