@@ -13,7 +13,6 @@ if (isset($_GET['requestID'])) {
                 u.name AS userName,
                 ie.itemID,
                 ie.itemName,
-                ie.itemImage,
                 im.itemIssue,
                 im.detailsMaintenance
             FROM maintenance_request mr
@@ -25,16 +24,13 @@ if (isset($_GET['requestID'])) {
     $result = mysqli_query($conn, $sql);
 
     if ($row = mysqli_fetch_assoc($result)) {
-        $itemID = $row['itemID'];
         $images = [];
 
-        if (!empty($itemID)) {
-            $imgQuery = "SELECT imagePath FROM item_images WHERE itemID = $itemID";
-            $imgResult = mysqli_query($conn, $imgQuery);
+        $imgQuery = "SELECT imagePath FROM maintenance_request_images WHERE requestID = $requestID";
+        $imgResult = mysqli_query($conn, $imgQuery);
 
-            while ($imgRow = mysqli_fetch_assoc($imgResult)) {
-                $images[] = $imgRow['imagePath'];
-            }
+        while ($imgRow = mysqli_fetch_assoc($imgResult)) {
+            $images[] = $imgRow['imagePath'];
         }
 
         $row['images'] = $images;

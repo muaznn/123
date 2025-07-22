@@ -4,20 +4,13 @@ include 'db_connection.php';
 if (isset($_GET['requestID'])) {
     $requestID = intval($_GET['requestID']);
 
-    $usageIDs = [];
-    $getUsage = $conn->query("SELECT usageID FROM usage_record WHERE requestID = $requestID");
-    while ($row = $getUsage->fetch_assoc()) {
-        $usageIDs[] = $row['usageID'];
-    }
-
-    foreach ($usageIDs as $usageID) {
-        $conn->query("DELETE FROM item_usage WHERE usageID = $usageID");
-    }
-
-    $conn->query("DELETE FROM usage_record WHERE requestID = $requestID");
-
+    // Delete from item_maintenance
     $conn->query("DELETE FROM item_maintenance WHERE requestID = $requestID");
 
+    // Delete from maintenance_request_images
+    $conn->query("DELETE FROM maintenance_request_images WHERE requestID = $requestID");
+
+    // Delete from maintenance_request
     $sql = "DELETE FROM maintenance_request WHERE requestID = $requestID";
     if ($conn->query($sql) === TRUE) {
         echo "success";

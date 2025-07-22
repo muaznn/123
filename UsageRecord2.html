@@ -263,10 +263,36 @@
 <script>
   // Load sidebar
   fetch("sidebarTherapist.html")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("sidebar-placeholder").innerHTML = data;
-    });
+          .then((res) => res.text())
+          .then((html) => {
+            document.getElementById("sidebar-placeholder").innerHTML = html;
+
+            const currentPage = decodeURIComponent(
+              window.location.pathname.split("/").pop()
+            );
+
+            const sidebarLinks = document.querySelectorAll(".sidebar a");
+
+            const relatedPages = [
+              "recordUsage.html",
+              "AddUsageRecord.html",
+              "EditUsageRecord.html",
+              "UsageRecord2.html",
+            ];
+
+            sidebarLinks.forEach((link) => {
+              const href = decodeURIComponent(link.getAttribute("href"));
+
+              if (
+                relatedPages.includes(currentPage) &&
+                href === "recordUsage.html"
+              ) {
+                link.classList.add("active");
+              } else if (href === currentPage) {
+                link.classList.add("active");
+              }
+            });
+          });
 
     document.getElementById("submitModalBtn").addEventListener("click", function () {
       fetch('UsageRecord2.php', {
@@ -281,10 +307,10 @@
         closeModal(); 
 
         if (data.success) {
-           showSuccessNotification("Stock updated successfully!"); 
+           showSuccessNotification("Usage Record submitted successfully!"); 
            setTimeout(() => {
             window.location.href = 'recordUsage.html'; 
-          }, 1000); 
+          }, 2000); 
         } else {
           alert(data.message || "Failed to update usage");
         }
@@ -451,23 +477,26 @@
 
   // Cancel record
   function cancelRecord() {
-    fetch("UsageRecord2.php", {
-      method: "POST"
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert("Record cancelled successfully.");
+  fetch("UsageRecord2.php", {
+    method: "POST"
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        showSuccessNotification("Your usage record has been cancelled!");
+        setTimeout(() => {
           window.location.href = "recordUsage.html";
-        } else {
-          alert("Failed to cancel record: " + (data.message || "Unknown error"));
-        }
-      })
-      .catch(error => {
-        console.error("Cancel error:", error);
-        alert("An error occurred while cancelling.");
-      });
-  }
+        }, 2000); // Wait 2s before redirecting
+      } else {
+        alert("Failed to cancel record: " + (data.message || "Unknown error"));
+      }
+    })
+    .catch(error => {
+      console.error("Cancel error:", error);
+      alert("An error occurred while cancelling.");
+    });
+}
+
 
   // Success notification
   function showSuccessNotification() {
@@ -598,6 +627,8 @@
       notification.classList.add("show");
       setTimeout(() => notification.classList.remove("show"), 3000);
   }
+
+  
 
   // Initialize the table when page loads
   document.addEventListener('DOMContentLoaded', function() {

@@ -1,14 +1,8 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Edit Maintenance Request</title>
-=======
-<html>
-  <head>
-    <meta charset="UTF-8" />
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
     <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
@@ -16,36 +10,107 @@
     />
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+      /* Notification styles */
+      .notification {
+        position: none;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+      }
+
+      .notification.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .notification i {
+        font-size: 18px;
+      }
+
+      .notification .message {
+        font-weight: 500;
+        font-size: 16px;
+      }
+
+      .notification.success {
+        background: #4caf50;
+        color: white;
+      }
+
+      .notification.error {
+        background: #ff5252;
+        color: white;
+      }
+
+      /* Success notification styles */
+      .success-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #4caf50;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+      }
+
+      .success-notification.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .success-notification i {
+        font-size: 18px;
+      }
+
+      .success-notification .message {
+        font-weight: 500;
+        font-size: 16px;
+      }
     </style>
-<<<<<<< HEAD
   </head>
   <body>
     <!-- sidebar -->
-=======
-    <title>Edit Maintenance Request</title>
-  </head>
-  <body>
-    <!-- Placeholder untuk sidebar -->
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
     <div id="sidebar-placeholder"></div>
 
     <div class="main-content">
       <header class="header-title">
         <div class="header-group">
-<<<<<<< HEAD
           <span class="admin-text">
             Admin <i class="fas fa-chevron-down text-base"></i>
           </span>
-=======
-          <span class="admin-text"
-            >Admin <i class="fas fa-chevron-down text-base"></i
-          ></span>
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
-          <i class="far fa-bell cursor-pointer"></i>
+          <div class="notification-wrapper">
+            <i class="far fa-bell cursor-pointer" id="notificationBell"></i>
+            <span id="notificationCount">0</span>
+
+            <!-- Notification Dropdown -->
+            <div
+              id="notificationDropdown"
+              class="notification-dropdown"
+              style="display: none"
+            >
+              <ul id="notificationList"></ul>
+            </div>
+          </div>
           <i class="far fa-user-circle cursor-pointer"></i>
         </div>
       </header>
-<<<<<<< HEAD
 
       <div class="header-title-wrapper">
         <div class="maintenance-title">Edit Maintenance Request</div>
@@ -59,27 +124,12 @@
         </div>
       </div>
 
-=======
-      <div class="header-title-wrapper">
-        <div class="maintenance-title">Maintenance Request</div>
-        <div class="btn-holder">
-          <button class="btn back">
-            <i class="fas fa-arrow-left"></i> Back
-          </button>
-          <button class="btn big-delete">
-            <i class="fas fa-trash-alt"></i> Delete
-          </button>
-          <button class="btn save"><i class="fas fa-save"></i> Save</button>
-        </div>
-      </div>
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
       <div class="request-detail-wrapper">
         <div class="left-request-detail">
           <h2>Equipment Maintenance Details</h2>
           <div class="info-grid">
             <div class="info-item">
               <label>Request ID</label>
-<<<<<<< HEAD
               <div class="info-box" id="request-id">Loading...</div>
             </div>
             <div class="info-item">
@@ -104,71 +154,29 @@
           <div class="status-section">
             <label>Status</label>
             <select class="status-dropdown" id="status">
-=======
-              <div class="info-box">987654</div>
-            </div>
-            <div class="info-item">
-              <label>Equipment</label>
-              <div class="info-box">Swiss Ball</div>
-            </div>
-            <div class="info-item">
-              <label>Date Submitted</label>
-              <div class="info-box">27 January 2025</div>
-            </div>
-            <div class="info-item">
-              <label>Issue</label>
-              <div class="info-box">ball cannot maintain air pressure</div>
-            </div>
-          </div>
-          <div class="detail-section">
-            <label>Details</label>
-            <div class="info-box large">
-              The Swiss Ball was found to be deflated despite repeated
-              inflation. Upon inspection, the valve appears to be loose or
-              damaged, causing air to leak continuously. Requires replacement of
-              valve or full replacement of the ball.
-            </div>
-          </div>
-          <div class="status-section">
-            <label>Status</label>
-            <select class="status-dropdown">
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
-              <option>In Process</option>
+              <option disabled>New</option>
               <option>Pending</option>
               <option>In Progress</option>
               <option>Completed</option>
             </select>
           </div>
-<<<<<<< HEAD
 
           <hr />
 
-=======
-          <hr />
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
           <div class="submitted-by">
             <h3>Submitted By</h3>
             <div class="info-grid">
               <div class="info-item">
                 <label>User ID</label>
-<<<<<<< HEAD
                 <div class="info-box" id="user-id">Loading...</div>
               </div>
               <div class="info-item">
                 <label>User Name</label>
                 <div class="info-box" id="user-name">Loading...</div>
-=======
-                <div class="info-box">200402</div>
-              </div>
-              <div class="info-item">
-                <label>User Name</label>
-                <div class="info-box">NURUL FARISHA JAMAL</div>
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
               </div>
             </div>
           </div>
         </div>
-<<<<<<< HEAD
 
         <div class="right-request-detail">
           <div class="main-img">
@@ -180,39 +188,55 @@
             />
           </div>
           <p>Additional Images</p>
-          <div class="thumbnail" id="additional-image">
-=======
-        <div class="right-request-detail">
-          <div class="main-img">
-            <img src="physiocare-logo.png" alt="Main image" />
-          </div>
-          <p>Additional Images</p>
-          <div class="thumbnail">
-            <img src="physiocare-logo.png" alt="Thumbnail" />
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
-          </div>
+          <div class="thumbnail" id="additional-image"></div>
         </div>
       </div>
     </div>
 
-<<<<<<< HEAD
     <!-- viewing image -->
     <div id="imgModal" class="modal" onclick="closeModal()">
       <span class="close">&times;</span>
       <img class="modal-content" id="modalImage" />
     </div>
 
+     <!-- Success Notification -->
+    <div class="success-notification" id="successNotification">
+      <i class="fas fa-check-circle"></i>
+      <span class="message">Status updated successfully!</span>
+    </div>
+
     <script>
       // Load sidebar
-=======
-    <script>
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
       fetch("sidebar.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("sidebar-placeholder").innerHTML = data;
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("sidebar-placeholder").innerHTML = html;
+
+          const currentPage = decodeURIComponent(
+            window.location.pathname.split("/").pop()
+          );
+
+          const sidebarLinks = document.querySelectorAll(".sidebar a");
+
+          const relatedPages = [
+            "handle maintenance request.html",
+            "edit maintenance request.html",
+            "view maintenance request.html",
+          ];
+
+          sidebarLinks.forEach((link) => {
+            const href = decodeURIComponent(link.getAttribute("href"));
+
+            if (
+              relatedPages.includes(currentPage) &&
+              href === "handle maintenance request.html"
+            ) {
+              link.classList.add("active");
+            } else if (href === currentPage) {
+              link.classList.add("active");
+            }
+          });
         });
-<<<<<<< HEAD
 
       const urlParams = new URLSearchParams(window.location.search);
       const requestID = urlParams.get("requestID");
@@ -234,26 +258,55 @@
             document.getElementById("user-name").textContent = data.userName;
             document.getElementById("status").value = data.status;
 
-            // Main image
-            const mainImage = data.itemImage
-              ? `images/${data.itemImage}`
-              : "images/placeholder.jpg";
             const equipmentImg = document.getElementById("equipment-img");
-            equipmentImg.src = mainImage;
-            equipmentImg.onclick = () => openModal(mainImage);
-
-            // Additional thumbnails
             const imageContainer = document.getElementById("additional-image");
+            const additionalImagesTitle = document.querySelector(
+              ".right-request-detail p"
+            );
+
             imageContainer.innerHTML = "";
+
             if (data.images && data.images.length > 0) {
-              data.images.forEach((img) => {
-                const imgTag = document.createElement("img");
-                imgTag.src = `images/${img}`;
-                imgTag.alt = "Additional image";
-                imgTag.classList.add("thumbnail-img");
-                imgTag.onclick = () => openModal(imgTag.src);
-                imageContainer.appendChild(imgTag);
-              });
+              const mainImagePath = `images/${data.images[0]}`;
+              equipmentImg.src = mainImagePath;
+              equipmentImg.onclick = () => openModal(mainImagePath);
+
+              if (data.images.length > 1) {
+                additionalImagesTitle.style.display = "block";
+                imageContainer.style.display = "flex";
+
+                for (let i = 1; i < data.images.length; i++) {
+                  const imgTag = document.createElement("img");
+                  imgTag.src = `images/${data.images[i]}`;
+                  imgTag.alt = "Additional image";
+                  imgTag.classList.add("thumbnail-img");
+                  imgTag.onclick = () => {
+                    equipmentImg.src = imgTag.src;
+                    openModal(imgTag.src);
+                  };
+                  imageContainer.appendChild(imgTag);
+                }
+              } else {
+                // one image "Additional Images"
+                additionalImagesTitle.style.display = "none";
+                imageContainer.style.display = "none";
+              }
+            } else {
+              //no image
+              equipmentImg.src = "images/placeholder.jpg";
+              equipmentImg.onclick = null;
+
+              additionalImagesTitle.style.display = "none";
+              imageContainer.style.display = "block";
+              imageContainer.innerHTML = "";
+
+              const noImgText = document.createElement("p");
+              noImgText.textContent = "No image uploaded";
+              noImgText.style.textAlign = "center";
+              noImgText.style.fontStyle = "italic";
+              noImgText.style.color = "#888";
+              noImgText.style.marginTop = "10px";
+              imageContainer.appendChild(noImgText);
             }
           })
           .catch((err) => {
@@ -261,7 +314,7 @@
             alert("Failed to load request detail.");
           });
 
-        // Save button
+        // Save button event listener
         document
           .getElementById("save-btn")
           .addEventListener("click", function () {
@@ -276,8 +329,11 @@
             })
               .then((response) => response.text())
               .then((data) => {
-                alert("Status updated successfully!");
-                window.location.href = "handle maintenance request.html";
+                // Only show notification when save button is clicked and request is successful
+                showSuccessNotification("Status updated successfully!");
+                setTimeout(() => {
+                  window.location.href = "handle maintenance request.html";
+                }, 3000);
               })
               .catch((err) => {
                 console.error("Error updating status:", err);
@@ -296,8 +352,91 @@
       function closeModal() {
         document.getElementById("imgModal").style.display = "none";
       }
-=======
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
+
+      // Notification bell functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const notifBell = document.getElementById("notificationBell");
+        const notifBadge = document.getElementById("notificationCount");
+        const notifDropdown = document.getElementById("notificationDropdown");
+        const notifList = document.getElementById("notificationList");
+
+        // Make sure all elements exist
+        if (!notifBell || !notifBadge || !notifDropdown || !notifList) {
+          console.warn("Notification elements not found in the page.");
+          return;
+        }
+
+        function fetchNotifications() {
+          fetch("get_new_maintenance_list.php")
+            .then((res) => res.json())
+            .then((data) => {
+              notifList.innerHTML = "";
+              if (data.length === 0) {
+                notifList.innerHTML = "<li>No new maintenance requests.</li>";
+              } else {
+                data.forEach((item) => {
+                  const li = document.createElement("li");
+                  li.textContent = `Request from ${
+                    item.submittedBy || "User"
+                  } - ${item.itemName || "No item"}`;
+                  notifList.appendChild(li);
+                });
+              }
+            })
+            .catch((err) => {
+              notifList.innerHTML = "<li>Error loading notifications.</li>";
+              console.error("Notification error:", err);
+            });
+
+          fetch("get_new_maintenance_count.php")
+            .then((res) => res.json())
+            .then((data) => {
+              const count = data.newCount;
+              if (count > 0) {
+                notifBadge.textContent = count;
+                notifBadge.style.display = "inline-block";
+              } else {
+                notifBadge.style.display = "none";
+              }
+            })
+            .catch((err) => {
+              console.error("Error fetching count:", err);
+            });
+        }
+
+        notifBell.addEventListener("click", function (e) {
+          e.stopPropagation();
+          notifDropdown.style.display =
+            notifDropdown.style.display === "block" ? "none" : "block";
+
+          fetch("mark_notifications_read.php", { method: "POST" }).then(() => {
+            notifBadge.style.display = "none";
+            fetchNotifications();
+          });
+        });
+
+        window.addEventListener("click", function (e) {
+          if (!notifBell.parentElement.contains(e.target)) {
+            notifDropdown.style.display = "none";
+          }
+        });
+
+        fetchNotifications();
+        setInterval(fetchNotifications, 30000);
+      });
+
+      // Success notification function - only called when explicitly triggered
+      function showSuccessNotification(message) {
+        const notif = document.getElementById("successNotification");
+        const messageSpan = notif.querySelector(".message");
+
+        messageSpan.textContent = message;
+        notif.classList.add("show");
+
+        setTimeout(() => {
+          notif.classList.remove("show");
+        }, 3000);
+      }
     </script>
   </body>
 </html>

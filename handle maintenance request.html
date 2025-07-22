@@ -4,16 +4,143 @@
     <meta charset="UTF-8" />
     <title>Handle Maintenance Request</title>
     <link rel="stylesheet" href="style.css" />
-<<<<<<< HEAD
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-=======
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .modal-overlay.hidden {
+        display: none;
+      }
+
+      .modal-box {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 520px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        position: relative;
+        text-align: center;
+        animation: fadeInScale 0.3s ease;
+      }
+
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .modal-icon {
+        font-size: 60px;
+        color: #ffc107;
+        margin-bottom: 15px;
+      }
+
+      .modal-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: #333;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .modal-buttons .btn {
+        padding: 10px 25px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+      }
+
+      .modal-buttons .cancel {
+        background: #f0f0f0;
+        color: #333;
+      }
+
+      .modal-buttons .submit {
+        background: #4caf50;
+        color: white;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: #888;
+      }
+
+      /* Notification styles */
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+      }
+
+      .notification.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .notification i {
+        font-size: 18px;
+      }
+
+      .notification .message {
+        font-weight: 500;
+        font-size: 16px;
+      }
+
+      .notification.success {
+        background: #4caf50;
+        color: white;
+      }
+
+      .notification.error {
+        background: #ff5252;
+        color: white;
+      }
     </style>
   </head>
   <body>
@@ -26,7 +153,19 @@
           <span class="admin-text"
             >Admin <i class="fas fa-chevron-down text-base"></i
           ></span>
-          <i class="far fa-bell cursor-pointer"></i>
+          <div class="notification-wrapper">
+            <i class="far fa-bell cursor-pointer" id="notificationBell"></i>
+            <span id="notificationCount">0</span>
+
+            <!-- Notification Dropdown -->
+            <div
+              id="notificationDropdown"
+              class="notification-dropdown"
+              style="display: none"
+            >
+              <ul id="notificationList"></ul>
+            </div>
+          </div>
           <i class="far fa-user-circle cursor-pointer"></i>
         </div>
       </header>
@@ -35,20 +174,13 @@
           <span class="handle-maintenance-title">Maintenance Request</span>
           <div class="search-container">
             <i class="fas fa-search"></i>
-<<<<<<< HEAD
             <input
               type="text"
               placeholder="Search"
               class="search-input"
               id="search-input"
             />
-=======
-            <input type="text" placeholder="Search" class="search-input" />
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
           </div>
-          <button class="filter-btn">
-            <i class="fas fa-filter"></i> Filter
-          </button>
         </div>
         <table>
           <thead>
@@ -62,179 +194,350 @@
               <th>Action</th>
             </tr>
           </thead>
-<<<<<<< HEAD
-          <tbody></tbody>
-=======
           <tbody>
-            <tr>
-              <td>1.</td>
-              <td>123456</td>
-              <td>240504</td>
-              <td>NURUL FARISHA JAMAL</td>
-              <td class="status-cell">
-                <div class="status-indicator pending"></div>
-                <span class="status-text pending">Pending</span>
-              </td>
-              <td>Dumbbell</td>
-              <td class="action-buttons">
-                <i class="fa view fa-eye" aria-hidden="true"></i>
-                <i class="fa edit fa-pencil" aria-hidden="true"></i>
-                <i class="fa delete fa-trash" aria-hidden="true"></i>
-              </td>
-            </tr>
-            <tr>
-              <td>2.</td>
-              <td>567890</td>
-              <td>200402</td>
-              <td>NUR AISYA AFIZI</td>
-              <td class="status-cell">
-                <div class="status-indicator completed"></div>
-                <span class="status-text pending">Complete</span>
-              </td>
-              <td>Treadmill</td>
-              <td class="action-buttons">
-                <i class="fa view fa-eye" aria-hidden="true"></i>
-                <i class="fa edit fa-pencil" aria-hidden="true"></i>
-                <i class="fa delete fa-trash" aria-hidden="true"></i>
-              </td>
-            </tr>
-            <tr>
-              <td>3.</td>
-              <td>987654</td>
-              <td>230604</td>
-              <td>FARISHA JAMAL 2</td>
-              <td class="status-cell">
-                <div class="status-indicator in-progress"></div>
-                <span class="status-text pending">In Progress</span>
-              </td>
-              <td>Swiss Ball</td>
-              <td class="action-buttons">
-                <i class="fa view fa-eye" aria-hidden="true"></i>
-                <i class="fa edit fa-pencil" aria-hidden="true"></i>
-                <i class="fa delete fa-trash" aria-hidden="true"></i>
-              </td>
+            <tr id="noResultsRow" style="display: none">
+              <td colspan="9" style="text-align: center">No record found</td>
             </tr>
           </tbody>
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
         </table>
       </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay hidden" id="deleteModal">
+      <div class="modal-box">
+        <button class="close-btn" onclick="closeDeleteModal()">×</button>
+        <div class="modal-icon">
+          <i class="fas fa-exclamation-triangle" style="color: #ff5252;"></i>
+        </div>
+        <h2 class="modal-title">Are you sure you want to delete this record?</h2>
+        <div id="deleteRequestInfo" style="margin-bottom: 20px; color: #666;"></div>
+        <div class="modal-buttons">
+          <button class="btn cancel" onclick="closeDeleteModal()">Cancel</button>
+          <button class="btn submit" id="confirmDeleteBtn" style="background-color: #ff5252;">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Element -->
+    <div class="notification" id="notification">
+      <i class="fas fa-check-circle"></i>
+      <span class="message"></span>
+    </div>
+
     <script>
-<<<<<<< HEAD
-      // sidebar
-=======
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
-      fetch("sidebar.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("sidebar-placeholder").innerHTML = data;
-        });
-<<<<<<< HEAD
+      let currentDeleteRequestID = null;
+      let currentDeleteRequestData = null;
+ function closeDeleteModal() {
+          const modal = document.getElementById('deleteModal');
+          modal.classList.add('hidden');
+          document.body.style.overflow = 'auto';
+          currentDeleteRequestID = null;
+          currentDeleteRequestData = null;
+        }
+      document.addEventListener("DOMContentLoaded", function () {
+        fetch("sidebar.html")
+          .then((res) => res.text())
+          .then((html) => {
+            document.getElementById("sidebar-placeholder").innerHTML = html;
 
-      // Fetch data request dari server
-      fetch("get_request.php")
-        .then((response) => response.json())
-        .then((data) => {
-          const tbody = document.querySelector("tbody");
-          tbody.innerHTML = ""; // Kosongkan jadual
+            const currentPage = decodeURIComponent(
+              window.location.pathname.split("/").pop()
+            );
 
-          data.forEach((row, index) => {
-            tbody.innerHTML += `
-          <tr data-row-id="${row.requestID}">
-            <td>${index + 1}.</td>
-            <td>${row.requestID}</td>
-            <td>${row.userID}</td>
-            <td>${row.userName}</td>
-            <td class="status-cell">
-              <div class="status-indicator ${row.status
-                .toLowerCase()
-                .replace(" ", "-")}"></div>
-              <span class="status-text">${row.status}</span>
-            </td>
-            <td>${row.itemName || "N/A"}</td>
-            <td class="action-buttons">
-              <i class="fa view fa-eye" aria-hidden="true" data-requestid="${
-                row.requestID
-              }"></i>
-              <i class="fa edit fa-pencil" aria-hidden="true" data-requestid="${
-                row.requestID
-              }"></i>
-              <i class="fa delete fa-trash" aria-hidden="true" data-requestid="${
-                row.requestID
-              }"></i>
-            </td>
-          </tr>
-        `;
-          });
+            const sidebarLinks = document.querySelectorAll(".sidebar a");
 
-          // View button
-          document.querySelectorAll(".fa.view").forEach((icon) => {
-            icon.addEventListener("click", function () {
-              const requestID = this.getAttribute("data-requestid");
-              window.location.href = `view maintenance request.html?requestID=${requestID}`;
-            });
-          });
+            const relatedPages = [
+              "handle maintenance request.html",
+              "edit maintenance request.html",
+              "view maintenance request.html",
+            ];
 
-          // Edit button
-          document.querySelectorAll(".fa.edit").forEach((icon) => {
-            icon.addEventListener("click", function () {
-              const requestID = this.getAttribute("data-requestid");
-              window.location.href = `edit maintenance request.html?requestID=${requestID}`;
-            });
-          });
+            sidebarLinks.forEach((link) => {
+              const href = decodeURIComponent(link.getAttribute("href"));
 
-          // Delete button
-          document.querySelectorAll(".fa.delete").forEach((icon) => {
-            icon.addEventListener("click", function () {
-              const requestID = this.getAttribute("data-requestid");
-
-              const confirmDelete = confirm(
-                `Are you sure you want to delete request ID ${requestID}?`
-              );
-
-              if (confirmDelete) {
-                fetch(`delete_request.php?requestID=${requestID}`, {
-                  method: "GET",
-                })
-                  .then((response) => response.text())
-                  .then((result) => {
-                    if (result.trim() === "success") {
-                      const row = document.querySelector(
-                        `tr[data-row-id="${requestID}"]`
-                      );
-                      if (row) row.remove();
-                      alert("Request successfully deleted.");
-                    } else {
-                      alert("Failed to delete the request.");
-                    }
-                  })
-                  .catch((error) => {
-                    console.error("Delete error:", error);
-                    alert("An error occurred during deletion.");
-                  });
+              if (
+                relatedPages.includes(currentPage) &&
+                href === "handle maintenance request.html"
+              ) {
+                link.classList.add("active");
+              } else if (href === currentPage) {
+                link.classList.add("active");
               }
             });
           });
-        })
-        .catch((error) => console.error("Error loading requests:", error));
 
-      document
-        .getElementById("search-input")
-        .addEventListener("input", function () {
-          const searchTerm = this.value.toLowerCase();
-          const rows = document.querySelectorAll("tbody tr");
+        function openDeleteModal(requestID, requestData) {
+          console.log("openDeleteModal called with:", requestID, requestData);
+          
+          currentDeleteRequestID = requestID;
+          currentDeleteRequestData = requestData;
+          
+          const requestInfo = document.getElementById('deleteRequestInfo');
+          if (requestInfo) {
+            requestInfo.innerHTML = `
+              <strong>Request ID:</strong> ${requestData.requestID}<br>
+              <strong>User:</strong> ${requestData.userName}<br>
+              <strong>Equipment:</strong> ${requestData.itemName || 'N/A'}
+            `;
+          }
 
-          rows.forEach((row) => {
-            const rowText = row.textContent.toLowerCase();
-            if (rowText.includes(searchTerm)) {
-              row.style.display = "";
-            } else {
-              row.style.display = "none";
-            }
+          const modal = document.getElementById('deleteModal');
+          if (modal) {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+          } else {
+            console.error("Modal element not found!");
+          }
+        }
+
+        function showNotification(message, type) {
+          const notification = document.getElementById('notification');
+          const icon = notification.querySelector('i');
+          const messageEl = notification.querySelector('.message');
+          
+          // Set icon and classes based on type
+          notification.className = `notification ${type}`;
+          icon.className = type === 'success' 
+            ? 'fas fa-check-circle' 
+            : 'fas fa-exclamation-circle';
+          
+          messageEl.textContent = message;
+          
+          // Show notification
+          notification.classList.add('show');
+          
+          // Hide after 3 seconds
+          setTimeout(() => {
+            notification.classList.remove('show');
+          }, 3000);
+        }
+
+        function confirmDelete() {
+          if (!currentDeleteRequestID) return;
+
+          const confirmBtn = document.getElementById('confirmDeleteBtn');
+          const originalContent = confirmBtn.innerHTML;
+          
+          // Show loading state
+          confirmBtn.disabled = true;
+          confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+
+          fetch(`delete_request.php?requestID=${currentDeleteRequestID}`)
+            .then((res) => res.text())
+            .then((result) => {
+              if (result.trim() === 'success') {
+                // Remove the row from table
+                document.querySelector(`tr[data-row-id="${currentDeleteRequestID}"]`).remove();
+                
+                // Check if table is now empty
+                const remainingRows = document.querySelectorAll('tbody tr:not(#noResultsRow)');
+                if (remainingRows.length === 0) {
+                  document.getElementById('noResultsRow').style.display = 'table-row';
+                }
+                
+                // Show success message
+                showNotification('Request successfully deleted', 'success');
+                closeDeleteModal();
+              } else {
+                showNotification('Failed to delete the request', 'error');
+              }
+            })
+            .catch((err) => {
+              console.error('Delete error:', err);
+              showNotification('An error occurred while deleting', 'error');
+            })
+            .finally(() => {
+              // Restore button state
+              confirmBtn.disabled = false;
+              confirmBtn.innerHTML = originalContent;
+            });
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeDeleteModal();
+          }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            closeDeleteModal();
+          }
+        });
+
+        // Connect confirm button
+        document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
+
+        const notifBell = document.getElementById("notificationBell");
+        const notifBadge = document.getElementById("notificationCount");
+        const notifDropdown = document.getElementById("notificationDropdown");
+        const notifList = document.getElementById("notificationList");
+
+        function fetchNotifications() {
+          fetch("get_new_maintenance_list.php")
+            .then((res) => res.json())
+            .then((data) => {
+              notifList.innerHTML = "";
+              if (data.length === 0) {
+                notifList.innerHTML = "<li>No new maintenance requests.</li>";
+              } else {
+                data.forEach((item) => {
+                  const li = document.createElement("li");
+                  li.textContent = `Request from ${
+                    item.submittedBy || "User"
+                  } - ${item.itemName || "No item"}`;
+                  notifList.appendChild(li);
+                });
+              }
+            })
+            .catch((err) => {
+              notifList.innerHTML = "<li>Error loading notifications.</li>";
+              console.error("Notification error:", err);
+            });
+
+          fetch("get_new_maintenance_count.php")
+            .then((res) => res.json())
+            .then((data) => {
+              const count = data.newCount;
+              if (count > 0) {
+                notifBadge.textContent = count;
+                notifBadge.style.display = "inline-block";
+              } else {
+                notifBadge.style.display = "none";
+              }
+            })
+            .catch((err) => {
+              console.error("Error fetching count:", err);
+            });
+        }
+
+        notifBell.addEventListener("click", function () {
+          notifDropdown.style.display =
+            notifDropdown.style.display === "block" ? "none" : "block";
+
+          fetch("mark_notifications_read.php", { method: "POST" }).then(() => {
+            notifBadge.style.display = "none";
+            fetchNotifications();
           });
         });
-=======
->>>>>>> c7abb7ad4a7543f739fd2d23eddd231809a0a0ca
+
+        window.addEventListener("click", function (e) {
+          if (!notifBell.parentElement.contains(e.target)) {
+            notifDropdown.style.display = "none";
+          }
+        });
+
+        fetchNotifications();
+        setInterval(fetchNotifications, 30000);
+
+        // Load maintenance request table
+        fetch("get_request.php")
+          .then((res) => res.json())
+          .then((data) => {
+            const tbody = document.querySelector("tbody");
+            const noResultsRow = document.getElementById("noResultsRow");
+
+            // Clear all rows and re-add the noResultsRow
+            tbody.innerHTML = "";
+            tbody.appendChild(noResultsRow);
+            noResultsRow.style.display = "none";
+
+            if (data.length === 0) {
+              noResultsRow.style.display = "table-row";
+              tbody.appendChild(noResultsRow);
+              return;
+            }
+
+            data.forEach((row, index) => {
+              const tr = document.createElement("tr");
+              tr.setAttribute("data-row-id", row.requestID);
+              tr.innerHTML = `
+                <td>${index + 1}.</td>
+                <td>${row.requestID}</td>
+                <td>${row.userID}</td>
+                <td>${row.userName}</td>
+                <td class="status-cell">
+                  <div class="status-indicator ${row.status
+                    .toLowerCase()
+                    .replace(" ", "-")}"></div>
+                  <span class="status-text">${row.status}</span>
+                </td>
+                <td>${row.itemName || "N/A"}</td>
+                <td class="action-buttons">
+                  <i class="fa view fa-eye" data-requestid="${
+                    row.requestID
+                  }"></i>
+                  <i class="fa edit fa-pencil" data-requestid="${
+                    row.requestID
+                  }"></i>
+                  <i class="fa delete fa-trash" data-requestid="${
+                    row.requestID
+                  }"></i>
+                </td>`;
+              tbody.appendChild(tr);
+            });
+
+            document.querySelectorAll(".fa.view").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                const id = btn.getAttribute("data-requestid");
+                window.location.href = `view maintenance request.html?requestID=${id}`;
+              });
+            });
+
+            document.querySelectorAll(".fa.edit").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                const id = btn.getAttribute("data-requestid");
+                window.location.href = `edit maintenance request.html?requestID=${id}`;
+              });
+            });
+
+            document.querySelectorAll(".fa.delete").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                const id = btn.getAttribute("data-requestid");
+                const row = btn.closest('tr');
+                const rowData = {
+                  requestID: row.cells[1].textContent,
+                  userName: row.cells[3].textContent,
+                  itemName: row.cells[5].textContent
+                };
+                openDeleteModal(id, rowData);
+              });
+            });
+
+            setupSearch(); // Call search once data is ready
+          })
+          .catch((err) => console.error("Table load error:", err));
+
+        function setupSearch() {
+          const searchInput = document.getElementById("search-input");
+          const noResultsRow = document.getElementById("noResultsRow");
+
+          searchInput.addEventListener("input", function () {
+            const search = this.value.toLowerCase();
+            const rows = document.querySelectorAll(
+              "tbody tr:not(#noResultsRow)"
+            );
+            let anyVisible = false;
+
+            rows.forEach((row) => {
+              const rowText = row.textContent.toLowerCase();
+              if (rowText.includes(search)) {
+                row.style.display = "";
+                anyVisible = true;
+              } else {
+                row.style.display = "none";
+              }
+            });
+
+            noResultsRow.style.display = anyVisible ? "none" : "table-row";
+          });
+        }
+      });
     </script>
   </body>
 </html>

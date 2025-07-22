@@ -33,6 +33,25 @@
     .success-notification .fa-check-circle {
       font-size: 20px;
     }
+
+     #available-qty {
+      font-size: 0.75em;
+      color: #c62828; /* Deep, elegant red */
+      margin-top: 4px;
+      font-weight: 500;
+      padding: 4px 10px;
+      background-color: #ffebee; /* Very light red background */
+      border-radius: 8px;
+      display: table;
+      border: 1px solid #ef9a9a; /* Light red border */
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+
+    #available-qty:hover {
+      background-color: #ffcdd2; /* Slightly darker red on hover */
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 <body>
@@ -50,7 +69,7 @@
 
       <div class="header-title-wrapper">
         <div class="tableUsage-title">
-          <span class="usage-title">Add Usage Record</span>
+          <span class="usage-title">Edit Usage Record</span>
         </div>
         <div class="btn-holder">
           <button class="btn back" type="button" onclick="location.href='UsageRecord2.html'"><i class="fas fa-arrow-left"></i> Back</button>
@@ -75,10 +94,14 @@
               <input class="info-boxUsage" type="text" id="ProductName" name="ProductName" placeholder="Glove" disabled>
             </div>
 
-            <div class="info-item">
-              <label>Quantity</label>
-              <input class="info-boxUsage" type="number" id="quantity" name="quantity" min="1" max="100" value="1">
-            </div>
+           <div class="info-item">
+  <label class="required-field">Quantity</label>
+  <input class="info-boxUsage" type="number" id="quantity" name="quantity" min="1" value="1">
+  <div id="available-qty">
+    <i class="fas fa-box-open" style="margin-right: 5px;"></i>
+    <span id="qty-text">Available: 0</span>
+  </div>
+</div>
 
             <div class="info-item">
               <label for="date-submitted">Date Submitted</label>
@@ -94,7 +117,7 @@
 
         <div class="right-request-detail">
           <div class="main-img">
-            <img id="main-image" src="default.jpg" alt="Main image" />
+            <img id="main-image" src="images\placeholder.jpg" alt="Main image" />
           </div>
         </div>
       </div>
@@ -108,11 +131,37 @@
   </div>
 
   <script>
-    fetch("sidebarTherapist.html")
-      .then((response) => response.text())
-      .then((data) => {
-        document.getElementById("sidebar-placeholder").innerHTML = data;
-      });
+   fetch("sidebarTherapist.html")
+          .then((res) => res.text())
+          .then((html) => {
+            document.getElementById("sidebar-placeholder").innerHTML = html;
+
+            const currentPage = decodeURIComponent(
+              window.location.pathname.split("/").pop()
+            );
+
+            const sidebarLinks = document.querySelectorAll(".sidebar a");
+
+            const relatedPages = [
+              "recordUsage.html",
+              "AddUsageRecord.html",
+              "EditUsageRecord.html",
+              "UsageRecord2.html",
+            ];
+
+            sidebarLinks.forEach((link) => {
+              const href = decodeURIComponent(link.getAttribute("href"));
+
+              if (
+                relatedPages.includes(currentPage) &&
+                href === "recordUsage.html"
+              ) {
+                link.classList.add("active");
+              } else if (href === currentPage) {
+                link.classList.add("active");
+              }
+            });
+          });
 
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -123,6 +172,17 @@
         alert("Missing parameters from URL!");
         return;
       }
+
+      //Quantity validation
+      document.getElementById('quantity').addEventListener('change', function() {
+        const enteredQty = parseInt(this.value);
+        const maxQty = parseInt(this.max);
+        
+        if (enteredQty > maxQty) {
+          showErrorNotification(`Only ${maxQty} items available!`);
+          this.value = maxQty;
+        }
+      });
 
       // Populate form with existing data
       fetch(`EditUsageRecord.php?usageID=${usageID}&itemID=${itemID}`)
@@ -144,6 +204,10 @@
           if (data.imagePath) {
             document.getElementById('main-image').src = data.imagePath;
           }
+          
+          availableQty = parseInt(data.availableQuantity) || 0;
+        document.getElementById('quantity').max = availableQty;
+        document.getElementById('available-qty').textContent = `Available: ${availableQty}`;
         })
         .catch(err => {
           console.error(err);

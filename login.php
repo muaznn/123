@@ -20,7 +20,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['name'] = $user['name'];
             $_SESSION['role'] = $user['role'];
 
-            header("Location: recordUsage.html"); // Redirect to dashboard/page
+            // Redirect based on role
+            if ($user['role'] === 'admin') {
+                header("Location: handle maintenance request.html");
+            } elseif ($user['role'] === 'therapist') {
+                header("Location: recordUsage.html");
+            } else {
+                // Default redirect if role doesn't match any condition
+                header("Location: default_page.html");
+            }
             exit();
         } else {
             echo "<script>alert('Incorrect password.'); window.history.back();</script>";

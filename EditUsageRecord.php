@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['usageID']) && isset($_G
                 r.usageDate,
                 i.itemName, 
                 i.description,
+                i.quantity AS availableQuantity,
                 img.imagePath
             FROM item_usage u
             JOIN usage_record r ON u.usageID = r.usageID

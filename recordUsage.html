@@ -52,11 +52,37 @@
     </div>
     <script>
   // Load sidebar
-  fetch("sidebarTherapist.html")
-    .then((response) => response.text())
-    .then((data) => {
-      document.getElementById("sidebar-placeholder").innerHTML = data;
-    });
+ fetch("sidebarTherapist.html")
+          .then((res) => res.text())
+          .then((html) => {
+            document.getElementById("sidebar-placeholder").innerHTML = html;
+
+            const currentPage = decodeURIComponent(
+              window.location.pathname.split("/").pop()
+            );
+
+            const sidebarLinks = document.querySelectorAll(".sidebar a");
+
+            const relatedPages = [
+              "recordUsage.html",
+              "AddUsageRecord.html",
+              "EditUsageRecord.html",
+              "UsageRecord2.html",
+            ];
+
+            sidebarLinks.forEach((link) => {
+              const href = decodeURIComponent(link.getAttribute("href"));
+
+              if (
+                relatedPages.includes(currentPage) &&
+                href === "recordUsage.html"
+              ) {
+                link.classList.add("active");
+              } else if (href === currentPage) {
+                link.classList.add("active");
+              }
+            });
+          });
 
   // Function to load items with optional search
   function loadItems(searchTerm = '') {
