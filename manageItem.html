@@ -1,0 +1,416 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage Item Latest</title>
+  <link rel="stylesheet" href="style4.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+  <style>
+    /* Summary section */
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .summary-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+      padding: 20px 30px;
+      flex: 1;
+      max-width: 320px;
+    }
+    .summary-card strong {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    .summary-card strong i {
+      font-size: 20px;
+      color: #26599f;
+    }
+    .summary-card p {
+      font-size: 14px;
+      margin: 5px 0;
+      color: #545454;
+    }
+    /* New summary items container for horizontal layout */
+    .summary-items {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    .summary-item {
+      text-align: center;
+      flex: 1;
+    }
+    .summary-item p.label {
+      font-size: 14px;
+      color: #545454;
+      margin: 0;
+    }
+    .summary-item p.value {
+      font-weight: 600;
+      font-size: 18px;
+      margin: 5px 0 0 0;
+    }
+
+    /* Category card */
+    .category-card {
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+      padding: 20px 30px;
+      max-width: 400px;
+      border: 2px solid #4a90e2; /* blue border as in image */
+    }
+    .category-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 15px;
+      color: #545454;
+      position: relative;
+    }
+    /* Small colored squares on left side of category title */
+    .category-title .color-square {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      border: 1.5px solid;
+      margin-right: 4px;
+    }
+    .color-square.blue-border {
+      border-color: #4a90e2;
+      background-color: transparent;
+    }
+    .color-square.orange-border {
+      border-color: #fd7e14;
+      background-color: transparent;
+    }
+    .color-square.blue-filled {
+      border-color: #4a90e2;
+      background-color: #4a90e2;
+    }
+    .color-square.orange-filled {
+      border-color: #fd7e14;
+      background-color: #fd7e14;
+    }
+    .category-buttons {
+      display: flex;
+      gap: 20px;
+    }
+    .category-btn {
+      padding: 15px 40px;
+      border-radius: 12px;
+      border: 2.5px solid transparent;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      user-select: none;
+      background-color: transparent;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      min-width: 120px;
+      text-align: center;
+    }
+    .category-btn.item {
+      border-color: #4a90e2;
+      color: #4a90e2;
+      background-color: #e6f0ff;
+    }
+    .category-btn.equipment {
+      border-color: #fd7e14;
+      color: #fd7e14;
+      background-color: #fff0e6;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Placeholder untuk sidebar -->
+    <div id="sidebar-placeholder">
+</div>
+
+<div class="main-content">
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text">Admin <i class="fas fa-chevron-down text-base"></i></span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+
+      <div class="header-title-wrapper">
+        <div class="maintenance-title">Inventory Summary</div>
+        <div class="btn-holder">
+          <button class="btn back" onclick="window.location.href='AddNewItem(Latest).html'">
+            <i class="bi bi-plus-lg"></i> Add New Item
+          </button>
+        </div>
+      </div>
+
+      <!-- summary and item/equipment filter button -->
+      <div class="summary" style="padding-top: 20px;">
+      <div class="summary-card">
+        <strong><i class="bi bi-box-seam"></i> Product Summary</strong>
+        <div class="summary-items" style="padding-top: 10px;">
+          <div class="summary-item">
+            <p class="label">All Products</p>
+            <p class="value">350</p>
+          </div>
+          <div class="summary-item">
+            <p class="label">Item</p>
+            <p class="value">12</p>
+          </div>
+          <div class="summary-item">
+            <p class="label">Equipment</p>
+            <p class="value">12</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; max-width: 400px;">
+        <div class="category-card">
+          <div class="category-title">
+            <span class="color-square blue-border"></span>
+            <span class="color-square orange-filled"></span>
+            <span class="color-square blue-filled"></span>
+            Category
+          </div>
+          <div class="category-buttons">
+            <button class="category-btn item">Item</button>
+            <button class="category-btn equipment">Equipment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- display all item list -->
+      <div class="table-container">
+        <div class="table-title">
+          <span class="handle-maintenance-title">Inventory List</span>
+          <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-input" placeholder="Search" class="search-input">
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Product Code</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="inventory-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div class="success-notification" id="successNotification">
+      <i class="fas fa-check-circle"></i>
+      <span class="message">Your usage record submitted successfully!</span>
+    </div>
+
+   <!-- Cancel Confirmation Modal -->
+    <div class="modal-overlay hidden" id="cancelModal">
+      <div class="modal-box cancel-modal-box">
+        <button class="close-btn" onclick="closeCancelModal()">×</button>
+        <div class="modal-icon">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h2 class="modal-title">Are you sure you want to cancel?</h2>
+        <div class="modal-buttons">
+          <button class="btn cancel" onclick="closeCancelModal()">No</button>
+          <button class="btn submit" onclick="cancelRecord()">
+            <i class="fas fa-trash"></i> Yes, Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay hidden" id="deleteModal">
+      <div class="modal-box">
+        <button class="close-btn" onclick="closeDeleteModal()">×</button>
+        <div class="modal-icon">
+          <i class="fas fa-exclamation-triangle" style="color: #ff5252;"></i>
+        </div>
+        <h2 class="modal-title">Are you sure you want to delete this record?</h2>
+        <p style="margin-bottom: 20px; color: #666;">This action cannot be undone.</p>
+        <div class="modal-buttons">
+          <button class="btn cancel" onclick="closeDeleteModal()">Cancel</button>
+          <button class="btn submit" onclick="confirmDelete()" style="background-color: #ff5252;">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  
+  <script>
+  // starting from here
+// new script
+  // sidebar
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-placeholder").innerHTML = data;
+        });
+
+  // Fetch data request dari server
+      fetch("fetch_manage_items.php")
+        .then((response) => response.json())
+        .then((data) => {
+          const tbody = document.querySelector("tbody");
+          tbody.innerHTML = ""; // Kosongkan jadual
+
+          // Calculate counts for summary
+          const totalProducts = data.length;
+          const itemCount = data.filter(d => d.category.toLowerCase() === "item").length;
+          const equipmentCount = data.filter(d => d.category.toLowerCase() === "equipment").length;
+
+          // Update summary values dynamically
+          document.querySelector(".summary-item p.value:nth-child(2)").textContent = totalProducts;
+          document.querySelectorAll(".summary-item p.value")[0].textContent = totalProducts;
+          document.querySelectorAll(".summary-item p.value")[1].textContent = itemCount;
+          document.querySelectorAll(".summary-item p.value")[2].textContent = equipmentCount;
+
+          data.forEach((row, index) => {
+            tbody.innerHTML += `
+          <tr data-row-id="${row.itemID}">
+            <td>${index + 1}.</td>
+            <td>${row.itemID}</td>
+            <td>${row.itemName}</td>
+            <td>${row.category}</td>
+            <td class="action-buttons">
+              <i class="fa view fa-eye" aria-hidden="true" data-requestid="${
+                row.itemID
+              }"></i>
+              <i class="fa edit fa-pencil" aria-hidden="true" data-requestid="${
+                row.itemID
+              }"></i>
+              <i class="fa delete fa-trash" aria-hidden="true" data-requestid="${
+                row.itemID
+              }"></i>
+            </td>
+          </tr>
+        `;
+          });
+
+          // View button
+          document.querySelectorAll(".fa.view").forEach((icon) => {
+            icon.addEventListener("click", function () {
+              const itemID = this.getAttribute("data-requestid");
+              window.location.href = `ViewItemDetailLatest.html?itemID=${itemID}`;
+            });
+          });
+
+          // Edit button
+          document.querySelectorAll(".fa.edit").forEach((icon) => {
+            icon.addEventListener("click", function () {
+              const itemID = this.getAttribute("data-requestid");
+              window.location.href = `EditExistingItem.html?itemID=${itemID}`;
+            });
+          });
+
+          // Delete button
+          document.querySelectorAll(".fa.delete").forEach((icon) => {
+            icon.addEventListener("click", function () {
+              const requestID = this.getAttribute("data-requestid");
+              // Open the delete confirmation modal
+              openDeleteModal(requestID);
+            });
+          });
+        })
+        .catch((error) => console.error("Error loading requests:", error));
+
+      document
+        .getElementById("search-input")
+        .addEventListener("input", function () {
+          const searchTerm = this.value.toLowerCase();
+          const rows = document.querySelectorAll("tbody tr");
+
+          rows.forEach((row) => {
+            const rowText = row.textContent.toLowerCase();
+            if (rowText.includes(searchTerm)) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          });
+        });
+
+        // Delete functionality
+  let currentDeleteRequestID = null;
+
+  function openDeleteModal(requestID) {
+      currentDeleteRequestID = requestID;
+      document.getElementById("deleteModal").classList.remove("hidden");
+  }
+
+  function closeDeleteModal() {
+      document.getElementById("deleteModal").classList.add("hidden");
+  }
+
+  function confirmDelete() {
+      if (!currentDeleteRequestID) {
+          alert("Error: No record selected for deletion");
+          closeDeleteModal();
+          return;
+      }
+
+      fetch(`delete_request.php?itemID=${currentDeleteRequestID}`, {
+          method: 'GET',
+      })
+      .then(response => response.text())
+      .then(result => {
+          if (result.trim() === "success") {
+              const row = document.querySelector(
+                `tr[data-row-id="${currentDeleteRequestID}"]`
+              );
+              if (row) row.remove();
+              showSuccessNotification("Request successfully deleted.");
+          } else {
+              alert("Failed to delete the request.");
+          }
+          closeDeleteModal();
+      })
+      .catch(error => {
+          console.error("Delete error:", error);
+          alert("An error occurred during deletion.");
+          closeDeleteModal();
+      });
+  }
+  // Success notification
+  function showSuccessNotification() {
+    const notification = document.getElementById("successNotification");
+    notification.classList.add("show");
+    setTimeout(() => notification.classList.remove("show"), 3000);
+  }
+  // Update success notification to accept custom messages
+  function showSuccessNotification(message = "Your usage record submitted successfully!") {
+      const notification = document.getElementById("successNotification");
+      notification.querySelector('.message').textContent = message;
+      notification.classList.add("show");
+      setTimeout(() => notification.classList.remove("show"), 3000);
+  }
+
+  </script>
+
+
+</body></html>

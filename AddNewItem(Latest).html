@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manage Item Info Admin</title>
+  <link rel="stylesheet" href="style4.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+  <style>
+    
+    .form-container {
+      background: white;
+      border-radius: 25px;
+      padding: 40px 50px;
+      box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+      flex-grow: 1;
+      display: flex;
+      gap: 40px;
+    }
+
+      .left-column, .middle-column, .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .left-column {
+      width: 150px;
+    }
+
+    .middle-column {
+      width: 200px;
+    }
+
+    .right-column {
+      flex-grow: 1;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .input-text {
+      background: #eee;
+      border-radius: 10px;
+      padding: 10px 15px;
+      font-size: 14px;
+      font-family: 'Cardo', serif;
+      border: none;
+      width: 100%;
+      color: #000;
+    }
+
+    .input-text[readonly] {
+      color: #555;
+    }
+
+    .custom-select {
+      position: relative;
+      background: #eee;
+      border-radius: 10px;
+      font-family: 'Cardo', serif;
+      font-size: 14px;
+      user-select: none;
+      cursor: pointer;
+      border: none;
+      padding: 10px 15px;
+      color: #000;
+    }
+
+    .custom-select .selected {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .custom-select .selected span {
+      font-weight: 600;
+    }
+
+    .custom-select .options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #eee;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+      max-height: 150px;
+      overflow-y: auto;
+      display: none;
+      z-index: 10;
+    }
+
+    .custom-select.open .options {
+      display: block;
+    }
+
+    .custom-select .option {
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+
+    .custom-select .option:hover,
+    .custom-select .option.selected {
+      background-color: #ccc;
+      font-weight: 600;
+    }
+
+    .number-input {
+      background: #eee;
+      border-radius: 10px;
+      padding: 10px 15px;
+      font-size: 14px;
+      font-family: 'Cardo', serif;
+      border: none;
+      width: 80px;
+      text-align: center;
+      color: #000;
+    }
+
+    .textarea-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    textarea.rich-text {
+      background: #eee;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 14px;
+      font-family: 'Cardo', serif;
+      border: none;
+      resize: none;
+      height: 150px;
+      width: 100%;
+      color: #000;
+    }
+
+    .rich-text-toolbar {
+      display: flex;
+      gap: 10px;
+    }
+
+    .rich-text-toolbar button {
+      background: #ddd;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .right-panel {
+      width: 250px;
+      background: white;
+      border-radius: 25px;
+      padding: 20px 15px;
+      box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      margin-left: 20px;
+      position: relative;
+    }
+
+    .file-upload {
+      border: 2px dashed #545454;
+      border-radius: 15px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #545454;
+      font-weight: 600;
+      font-size: 14px;
+      text-align: center;
+      position: relative;
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .file-upload i {
+      font-size: 40px;
+      margin-bottom: 10px;
+      z-index: 1;
+    }
+
+    .file-upload button {
+      background-color: #26599f;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+      z-index: 1;
+    }
+
+    .file-upload .top-icons {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 10px;
+      z-index: 2;
+    }
+
+    .file-upload .top-icons i {
+      cursor: pointer;
+      font-size: 18px;
+      color: #545454;
+    }
+
+    .file-upload img.preview {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-height: 140px;
+      max-width: 90%;
+      object-fit: contain;
+      border-radius: 15px;
+      z-index: 0;
+    }
+
+    .additional-images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .additional-image {
+      width: 100px;
+      height: 100px;
+      border: 2px dashed #545454;
+      border-radius: 15px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #545454;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: default;
+    }
+
+    .additional-image img {
+      width: 90%;
+      height: 90%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .additional-image .top-icons {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      display: flex;
+      gap: 5px;
+    }
+
+    .additional-image .top-icons i {
+      cursor: pointer;
+      font-size: 14px;
+      color: #545454;
+    }
+  </style>
+</head>
+<body>
+  <!-- Placeholder untuk sidebar -->
+    <div id="sidebar-placeholder"></div>
+
+<div class="main-content">
+  <!-- <form id="usage-form"> -->
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text">Admin <i class="fas fa-chevron-down text-base"></i></span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+
+      <div class="header-title-wrapper" style="padding-bottom: 10px;">
+        <div class="maintenance-title">New Inventory Item</div>
+        <div class="btn-holder">
+          <button class="btn back" type="button" onclick="window.history.back();">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <button class="btn save" type="button" id="saveBtn"><i class="fas fa-save"></i> Save</button>
+        </div>
+      </div>
+
+      <!-- content fields -->
+      <form id="itemForm" method="POST" action="store_item_equipment.php" enctype="multipart/form-data">
+        <div class="request-detail-wrapper" >
+          <!-- left side -->
+          <div class="left-request-detail" style="flex: 2; display: flex; flex-direction: column;">
+            <div class="info-grid" style="display: flex; gap: 40px;">
+              <!-- Left column: Product Name, Category, Status, Condition -->
+              <div class="left-column" style="display: flex; flex-direction: column; gap: 30px; min-width: 200px;">
+                <div class="info-item">
+                  <label for="productName">Product Name</label>
+                  <input id="productName" name="itemName" class="info-boxUsage" value="" placeholder="Enter product name" required/>
+                </div>
+                <div class="info-item">
+                  <label for="productCategory">Product Category</label>
+                  <select id="productCategorySelect" name="category" class="status-dropdown" required>
+                    <option value="" disabled selected>Select a category</option>
+                    <option value="Item">Item</option>
+                    <option value="Equipment">Equipment</option>
+                  </select>
+                </div>
+                <div class="info-item">
+                  <label for="statusProduct">Status Product</label>
+                  <select id="statusProductSelect" name="stat" class="status-dropdown" required>
+                    <option value="" disabled selected>Select a status</option>
+                    <option value="Not Available" >Not Available</option>
+                    <option value="Available">Available</option>
+                  </select>
+                </div>
+                <div class="info-item">
+                  <label for="conditionProduct">Condition Product</label>
+                  <select id="conditionProductSelect" name="condisi" class="status-dropdown" required>
+                    <option value="" disabled selected>Select a condition</option>
+                    <option value="Damaged" >Damaged</option>
+                    <option value="Good">Good</option>
+                    <option value="New">New</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Middle column: Quantity, Stock Level -->
+              <div class="middle-column" style="display: flex; flex-direction: column; gap: 30px; min-width: 180px;">
+                <div class="info-item">
+                  <label for="quantity">Quantity</label>
+                  <input class="number-input" type="number" id="quantity" name="quantity" min="1" max="100" value="1" required>
+                </div>
+                <div class="info-item">
+                  <label for="stockLevel">Stock Level</label>
+                  <input type="number" id="stockLevel" name="stockLevel" class="number-input" value="0" min="0" required/>
+                </div>
+              </div>
+              <!-- Right column: Product Detail Description -->
+              <div class="right-column" style="display: flex; flex-direction: column; gap: 30px; flex-grow: 1;">
+                <div class="detail-section">
+                  <label for="productDetail">Product Detail Description</label>
+                  <div class="textarea-container">
+                    <textarea id="productDetail" name="descr" class="rich-text" placeholder="Add a detail description for your product..." required></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- right side -->
+          <div class="right-request-detail" style="flex: 1; padding: 20px; width: 280px; background: white; border-radius: 15px; box-shadow: 0 0 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 14px; color: #333;">
+            <div class="file-upload" id="fileUploadBox" style="border: 2px dashed #ccc; border-radius: 12px; height: 250px; width: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #555; font-weight: 700; font-size: 14px; text-align: center; position: relative; padding: 10px; overflow: hidden;">
+              <div class="top-icons" style="position: absolute; top: 8px; right: 8px; display: flex; gap: 10px; z-index: 2;">
+                <i class="bi bi-cloud-arrow-up" style="font-size: 18px; color: #555;"></i>
+                <i class="bi bi-trash" id="clearImageBtn" style="font-size: 18px; color: #555; cursor: pointer;"></i>
+              </div>
+              <i class="bi bi-cloud-upload" id="uploadIcon" style="font-size: 40px; margin-bottom: 10px; z-index: 1;"></i>
+              <p id="uploadText" style="margin: 0; line-height: 1.4;">
+                DRAG AND DROP YOUR FILE<br /> OR<br />
+                <button id="browseFileBtn" type="button" style="background-color: #26599f; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; margin-top: 10px; z-index: 1;">BROWSE FILE</button>
+              </p>
+              <input type="file" id="fileInput" name="image" accept="image/*" style="display:none"  />
+              <img id="previewImage" src="" alt="Preview" class="preview" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); max-height: 140px; max-width: 90%; object-fit: contain; border-radius: 15px; z-index: 0;" />
+            </div>
+            <div>
+              <h4 style="font-weight: 700; margin-bottom: 10px;">Additional Images</h4>
+              <div class="additional-images" style="display: none; flex-wrap: wrap; gap: 15px;">
+                <div id="uploadAdditionalImageBtn" style="visibility: hidden; cursor:pointer; width: 100px; height: 100px; border: 2px dashed #26599f; border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #26599f; font-weight: 700; font-size: 14px; gap: 5px;">
+                  <i class="bi bi-image" style="font-size: 24px;"></i>
+                  <span>Upload Image</span>
+                </div>
+              </div>
+              <input type="file" id="additionalFileInput" accept="image/*" style="display:none" />
+            </div>
+          </div>
+        </div>
+      </form>
+      <script>
+        // Save form data and images to localStorage on form submission
+        document.getElementById('itemForm').addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent default form submission
+
+          const formData = {
+            itemName: document.getElementById('productName').value,
+            category: document.getElementById('productCategorySelect').value,
+            stat: document.getElementById('statusProductSelect').value,
+            kondisi: document.getElementById('conditionProductSelect').value,
+            quantity: document.getElementById('quantity').value,
+            stockLevel: document.getElementById('stockLevel').value,
+            descr: document.getElementById('productDetail').value,
+            mainImage: '',
+            additionalImages: []
+          };
+
+          // Get main image from fileInput
+          const fileInput = document.getElementById('fileInput');
+          if (fileInput.files.length > 0) {
+            const mainFile = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              formData.mainImage = e.target.result;
+
+              // Get additional images from selectedFiles array
+              if (window.selectedFiles && window.selectedFiles.length > 0) {
+                const additionalReaders = [];
+                let loadedCount = 0;
+
+                window.selectedFiles.forEach((file, index) => {
+                  const addReader = new FileReader();
+                  addReader.onload = function(ev) {
+                    formData.additionalImages.push(ev.target.result);
+                    loadedCount++;
+                    if (loadedCount === window.selectedFiles.length) {
+                      // All additional images loaded, save to localStorage and redirect
+                      localStorage.setItem('formData', JSON.stringify(formData));
+                      window.location.href = 'AddNewItemSaveLatest.html?fromForm=1';
+                    }
+                  };
+                  addReader.readAsDataURL(file);
+                });
+              } else {
+                // No additional images, save and redirect
+                localStorage.setItem('formData', JSON.stringify(formData));
+                window.location.href = 'AddNewItemSaveLatest.html?fromForm=1';
+              }
+            };
+            reader.readAsDataURL(mainFile);
+          } else {
+            // No main image, proceed similarly
+            if (window.selectedFiles && window.selectedFiles.length > 0) {
+              let loadedCount = 0;
+              window.selectedFiles.forEach((file, index) => {
+                const addReader = new FileReader();
+                addReader.onload = function(ev) {
+                  formData.additionalImages.push(ev.target.result);
+                  loadedCount++;
+                  if (loadedCount === window.selectedFiles.length) {
+                    localStorage.setItem('formData', JSON.stringify(formData));
+                    window.location.href = 'AddNewItemSaveLatest.html?fromForm=1';
+                  }
+                };
+                addReader.readAsDataURL(file);
+              });
+            } else {
+              // No images at all
+              localStorage.setItem('formData', JSON.stringify(formData));
+              window.location.href = 'AddNewItemSaveLatest.html?fromForm=1';
+            }
+          }
+        });
+      </script>
+    </div>
+  </div>
+
+  <script>
+     // Load sidebar
+    fetch("sidebar.html")
+      .then((response) => response.text())
+      .then((data) => {
+        document.getElementById("sidebar-placeholder").innerHTML = data;
+      });
+    // --- New GitHub-style multiple image upload implementation ---
+    // Store selected files in an array (global scope for all handlers)
+    let selectedFiles = [];
+    document.addEventListener('DOMContentLoaded', () => {
+      // --- Old code above is commented out for reference ---
+      /*
+      ...existing code for old upload handling...
+      */
+      const browseFileBtn = document.getElementById('browseFileBtn');
+      const fileInput = document.getElementById('fileInput');
+      const fileUploadBox = document.getElementById('fileUploadBox');
+      const clearImageBtn = document.getElementById('clearImageBtn');
+      const additionalImagesContainer = document.querySelector('.additional-images');
+
+      // Helper to update the preview grid
+      function updateImagePreview() {
+        // Remove all except the upload button
+        const uploadBtn = document.getElementById('uploadAdditionalImageBtn');
+        additionalImagesContainer.innerHTML = '';
+        additionalImagesContainer.appendChild(uploadBtn);
+        selectedFiles.forEach((file, idx) => {
+          const div = document.createElement('div');
+          div.classList.add('additional-image');
+          div.style.width = '100px';
+          div.style.height = '100px';
+          div.style.border = '2px dashed #ccc';
+          div.style.borderRadius = '12px';
+          div.style.position = 'relative';
+          div.style.display = 'flex';
+          div.style.justifyContent = 'center';
+          div.style.alignItems = 'center';
+          div.style.color = '#555';
+          div.style.fontWeight = '700';
+          div.style.fontSize = '14px';
+          div.style.cursor = 'default';
+
+          const img = document.createElement('img');
+          img.style.width = '90%';
+          img.style.height = '90%';
+          img.style.objectFit = 'cover';
+          img.style.borderRadius = '10px';
+          div.appendChild(img);
+
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+
+          const topIcons = document.createElement('div');
+          topIcons.classList.add('top-icons');
+          topIcons.style.position = 'absolute';
+          topIcons.style.top = '5px';
+          topIcons.style.right = '5px';
+          topIcons.style.display = 'flex';
+          topIcons.style.gap = '5px';
+
+          const trashIcon = document.createElement('i');
+          trashIcon.classList.add('bi', 'bi-trash');
+          trashIcon.style.fontSize = '14px';
+          trashIcon.style.color = '#555';
+          trashIcon.style.cursor = 'pointer';
+          trashIcon.title = 'Remove image';
+          trashIcon.addEventListener('click', () => {
+            selectedFiles.splice(idx, 1);
+            updateImagePreview();
+          });
+          topIcons.appendChild(trashIcon);
+          div.appendChild(topIcons);
+
+          additionalImagesContainer.insertBefore(div, uploadBtn);
+        });
+        additionalImagesContainer.style.display = selectedFiles.length > 0 ? 'flex' : 'none';
+        clearImageBtn.style.display = selectedFiles.length > 0 ? 'block' : 'none';
+      }
+
+      // Handle file selection (from input or drop)
+      function handleFiles(files) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (file.type.startsWith('image/')) {
+            // Prevent duplicates by name+size
+            if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+              selectedFiles.push(file);
+            }
+          } else {
+            alert('Please upload only image files.');
+          }
+        }
+        updateImagePreview();
+      }
+
+      // Browse button
+      browseFileBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        fileInput.click();
+      });
+
+      // File input change
+      fileInput.addEventListener('change', () => {
+        handleFiles(fileInput.files);
+      });
+
+      // Drag and drop
+      fileUploadBox.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadBox.style.borderColor = '#26599f';
+        fileUploadBox.style.backgroundColor = '#f0f8ff';
+      });
+      fileUploadBox.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        fileUploadBox.style.borderColor = '#ccc';
+        fileUploadBox.style.backgroundColor = 'transparent';
+      });
+      fileUploadBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadBox.style.borderColor = '#ccc';
+        fileUploadBox.style.backgroundColor = 'transparent';
+        handleFiles(e.dataTransfer.files);
+      });
+
+      // Clear all images
+      clearImageBtn.addEventListener('click', () => {
+        selectedFiles = [];
+        updateImagePreview();
+      });
+      clearImageBtn.style.display = 'none';
+
+      // Hide previewImage element since it is no longer used for preview
+      document.getElementById('previewImage').style.display = 'none';
+
+      // Initial preview update
+      updateImagePreview();
+
+      // --- Ensure uploadAdditionalImageBtn is hidden (not used) ---
+      document.getElementById('uploadAdditionalImageBtn').style.display = 'none';
+    });
+  </script>
+  <script>
+    // Enable/disable status and condition selects based on category selection
+    document.addEventListener('DOMContentLoaded', function() {
+      const categorySelect = document.getElementById('productCategorySelect');
+      const statusSelect = document.getElementById('statusProductSelect');
+      const conditionSelect = document.getElementById('conditionProductSelect');
+
+      function updateSelects() {
+        if (categorySelect.value === 'Item') {
+          statusSelect.disabled = false;
+          statusSelect.required = true;
+          statusSelect.style.backgroundColor = '';
+          Array.from(statusSelect.options).forEach(opt => opt.disabled = false);
+
+          conditionSelect.disabled = true;
+          conditionSelect.required = false;
+          conditionSelect.value = '';
+          conditionSelect.style.backgroundColor = '#e9ecef';
+        } else if (categorySelect.value === 'Equipment') {
+          conditionSelect.disabled = false;
+          conditionSelect.required = true;
+          conditionSelect.style.backgroundColor = '';
+          Array.from(conditionSelect.options).forEach(opt => opt.disabled = false);
+
+          statusSelect.disabled = true;
+          statusSelect.required = false;
+          statusSelect.value = '';
+          statusSelect.style.backgroundColor = '#e9ecef';
+        } else {
+          // If nothing selected, disable both
+          statusSelect.disabled = true;
+          statusSelect.required = false;
+          statusSelect.value = '';
+          statusSelect.style.backgroundColor = '#e9ecef';
+          conditionSelect.disabled = true;
+          conditionSelect.required = false;
+          conditionSelect.value = '';
+          conditionSelect.style.backgroundColor = '#e9ecef';
+        }
+      }
+
+      // Initial state
+      updateSelects();
+      categorySelect.addEventListener('change', updateSelects);
+    });
+  </script>
+  <style>
+    /* Custom modal popup styles */
+    #customModal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    #customModalContent {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px 30px;
+      border: 1px solid #888;
+      border-radius: 12px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      animation: popupFadeIn 0.3s ease forwards;
+    }
+    #customModalContent p {
+      margin: 0 0 20px 0;
+      font-size: 16px;
+      color: #333;
+    }
+    #customModalCloseBtn {
+      background-color: #26599f;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+    #customModalCloseBtn:hover {
+      background-color: #1f3f6f;
+    }
+    @keyframes popupFadeIn {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
+
+  <div id="customModal" role="dialog" aria-modal="true" aria-labelledby="customModalMessage">
+    <div id="customModalContent">
+      <p id="customModalMessage"></p>
+      <button id="customModalCloseBtn" aria-label="Close popup">OK</button>
+    </div>
+  </div>
+
+  <script>
+  // Custom modal popup functions
+  function showCustomModal(message) {
+    const modal = document.getElementById('customModal');
+    const messageElem = document.getElementById('customModalMessage');
+
+    messageElem.textContent = message;
+    modal.style.display = 'block';
+  }
+
+  // Close modal event listener added once
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('customModal');
+    const closeBtn = document.getElementById('customModalCloseBtn');
+
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+  });
+
+  // Remove duplicate event listener if any
+  const saveBtn = document.getElementById('saveBtn');
+    const newHandler = function() {
+      const form = document.getElementById('itemForm');
+
+      // Check if required fields are filled
+      const productName = document.getElementById('productName').value.trim();
+      const productCategory = document.getElementById('productCategorySelect').value;
+      const statusProduct = document.getElementById('statusProductSelect').value;
+      const conditionProduct = document.getElementById('conditionProductSelect').value;
+      const quantity = document.getElementById('quantity').value;
+      const fileInput = document.getElementById('fileInput');
+      // Removed productDetail validation as requested
+      // const productDetail = document.getElementById('productDetail').value.trim();
+
+
+      let missingFields = [];
+      if (!productName) {
+        missingFields.push('product name');
+      }
+      if (!productCategory) {
+        missingFields.push('product category');
+      }
+      // Only check status if enabled
+      const statusSelectElem = document.getElementById('statusProductSelect');
+      if (!statusSelectElem.disabled && !statusProduct) {
+        missingFields.push('product status');
+      }
+      // Only check condition if enabled
+      const conditionSelectElem = document.getElementById('conditionProductSelect');
+      if (!conditionSelectElem.disabled && !conditionProduct) {
+        missingFields.push('product condition');
+      }
+      if (!quantity || quantity <= 0) {
+        missingFields.push('valid quantity');
+      }
+      if (missingFields.length > 0) {
+        alert('Please enter/select the ' + missingFields.join(' and ') + '.');
+        return;
+      }
+
+      if (form.checkValidity()) {
+        const formData = new FormData(form);
+        // Remove the default file input (it will be empty)
+        formData.delete('image');
+        // Append all selected files as 'image[]'
+        selectedFiles.forEach(file => {
+          formData.append('image[]', file);
+        });
+        if (selectedFiles.length === 0) {
+          alert('Please upload at least one product image.');
+          return;
+        }
+        fetch(form.action, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+.then(data => {
+          if (data.success) {
+            // Debug log to confirm redirect URL
+            console.log('Redirecting to:', `AddNewItemSaveLatest.html?added=1&itemID=${encodeURIComponent(data.itemID)}`);
+            window.location.href = `AddNewItemSaveLatest.html?added=1&itemID=${encodeURIComponent(data.itemID)}`;
+          } else {
+            showCustomModal('Failed to save the item. Please try again.');
+          }
+        })
+        .catch(error => {
+          showCustomModal('Error occurred while saving the item.');
+          console.error(error);
+        });
+      } else {
+        form.reportValidity();
+      }
+    };
+  // Remove all existing click listeners
+  saveBtn.replaceWith(saveBtn.cloneNode(true));
+  document.getElementById('saveBtn').addEventListener('click', newHandler);
+  </script>
+  <script>
+    // Rich text toolbar button functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const textarea = document.getElementById('productDetail');
+      const toolbar = document.querySelector('.rich-text-toolbar');
+      if (!textarea || !toolbar) return;
+
+      function surroundSelection(before, after) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selectedText = textarea.value.substring(start, end);
+        const newText = before + selectedText + after;
+        textarea.setRangeText(newText, start, end, 'end');
+        textarea.focus();
+        // Move cursor to after inserted text
+        textarea.selectionStart = textarea.selectionEnd = start + newText.length;
+      }
+
+      function insertAtSelection(text) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        textarea.setRangeText(text, start, end, 'end');
+        textarea.focus();
+        textarea.selectionStart = textarea.selectionEnd = start + text.length;
+      }
+
+      toolbar.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => {
+          const btnText = button.textContent.trim().toLowerCase();
+          switch (btnText) {
+            case 'b':
+              surroundSelection('**', '**'); // Markdown bold
+              break;
+            case 'u':
+              surroundSelection('<u>', '</u>'); // underline with HTML tags
+              break;
+            case 'i':
+              surroundSelection('*', '*'); // Markdown italic
+              break;
+            case 'code':
+              surroundSelection('`', '`'); // inline code markdown
+              break;
+            case 'link':
+              const url = prompt('Enter the URL');
+              if (url) {
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const selectedText = textarea.value.substring(start, end) || 'link text';
+                const linkText = `[${selectedText}](${url})`;
+                textarea.setRangeText(linkText, start, end, 'end');
+                textarea.focus();
+                textarea.selectionStart = textarea.selectionEnd = start + linkText.length;
+              }
+              break;
+            default:
+              break;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
