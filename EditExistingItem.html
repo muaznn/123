@@ -394,11 +394,36 @@
   <script>
 document.addEventListener('DOMContentLoaded', function() {
   // Load sidebar
-  fetch("sidebar.html")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("sidebar-placeholder").innerHTML = data;
-    });
+ fetch("sidebar.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("sidebar-placeholder").innerHTML = html;
+
+          const currentPage = decodeURIComponent(
+            window.location.pathname.split("/").pop()
+          );
+
+          const sidebarLinks = document.querySelectorAll(".sidebar a");
+
+          const relatedPages = [
+            "AddNewItem(Latest).html",
+            "AddNewItemSaveLatest.html",
+            "manageItem.html",
+          ];
+
+          sidebarLinks.forEach((link) => {
+            const href = decodeURIComponent(link.getAttribute("href"));
+
+            if (
+              relatedPages.includes(currentPage) &&
+              href === "manageItem.html"
+            ) {
+              link.classList.add("active");
+            } else if (href === currentPage) {
+              link.classList.add("active");
+            }
+          });
+        });
 
   let selectedFiles = [];
   let originalData = {};

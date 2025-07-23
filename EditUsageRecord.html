@@ -197,7 +197,7 @@
           document.getElementById('ProductName').value = data.itemName;
           document.getElementById('quantity').value = data.quantityUsed;
           document.getElementById('date-submitted').value = data.usageDate || new Date().toISOString().split('T')[0];
-          document.getElementById('description').textContent = data.description || 'No description provided.';
+          document.getElementById('description').textContent = data.descr || 'No description provided.';
           document.getElementById('usageID').value = usageID;
           document.getElementById('itemID').value = itemID;
 

@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     try {
         $stmt = $conn->prepare("
-            SELECT i.itemID, i.itemName, i.description, i.quantity AS availableQuantity, img.imagePath
+            SELECT i.itemID, i.itemName, i.descr, i.quantity AS availableQuantity, img.imagePath
             FROM item_equipment_info i
             LEFT JOIN item_images img ON i.itemID = img.itemID
             WHERE i.itemID = ?

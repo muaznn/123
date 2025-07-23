@@ -267,9 +267,34 @@
 // new script
   // sidebar
       fetch("sidebar.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("sidebar-placeholder").innerHTML = data;
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("sidebar-placeholder").innerHTML = html;
+
+          const currentPage = decodeURIComponent(
+            window.location.pathname.split("/").pop()
+          );
+
+          const sidebarLinks = document.querySelectorAll(".sidebar a");
+
+          const relatedPages = [
+            "AddNewItem(Latest).html",
+            "AddNewItemSaveLatest.html",
+            "manageItem.html",
+          ];
+
+          sidebarLinks.forEach((link) => {
+            const href = decodeURIComponent(link.getAttribute("href"));
+
+            if (
+              relatedPages.includes(currentPage) &&
+              href === "manageItem.html"
+            ) {
+              link.classList.add("active");
+            } else if (href === currentPage) {
+              link.classList.add("active");
+            }
+          });
         });
 
   // Fetch data request dari server
@@ -281,8 +306,9 @@
 
           // Calculate counts for summary
           const totalProducts = data.length;
-          const itemCount = data.filter(d => d.category.toLowerCase() === "item").length;
-          const equipmentCount = data.filter(d => d.category.toLowerCase() === "equipment").length;
+          const itemCount = data.filter(d => d && typeof d.category === "string" && d.category.toLowerCase() === "item").length;
+          const equipmentCount = data.filter(d => d && typeof d.category === "string" && d.category.toLowerCase() === "equipment").length;
+
 
           // Update summary values dynamically
           document.querySelector(".summary-item p.value:nth-child(2)").textContent = totalProducts;
@@ -374,7 +400,7 @@
           return;
       }
 
-      fetch(`delete_request.php?itemID=${currentDeleteRequestID}`, {
+      fetch(`delete_item.php?itemID=${currentDeleteRequestID}`, {
           method: 'GET',
       })
       .then(response => response.text())

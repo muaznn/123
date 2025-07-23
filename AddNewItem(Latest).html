@@ -468,10 +468,35 @@
   <script>
      // Load sidebar
     fetch("sidebar.html")
-      .then((response) => response.text())
-      .then((data) => {
-        document.getElementById("sidebar-placeholder").innerHTML = data;
-      });
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("sidebar-placeholder").innerHTML = html;
+
+          const currentPage = decodeURIComponent(
+            window.location.pathname.split("/").pop()
+          );
+
+          const sidebarLinks = document.querySelectorAll(".sidebar a");
+
+          const relatedPages = [
+            "AddNewItem(Latest).html",
+            "AddNewItemSaveLatest.html",
+            "manageItem.html",
+          ];
+
+          sidebarLinks.forEach((link) => {
+            const href = decodeURIComponent(link.getAttribute("href"));
+
+            if (
+              relatedPages.includes(currentPage) &&
+              href === "manageItem.html"
+            ) {
+              link.classList.add("active");
+            } else if (href === currentPage) {
+              link.classList.add("active");
+            }
+          });
+        });
     // --- New GitHub-style multiple image upload implementation ---
     // Store selected files in an array (global scope for all handlers)
     let selectedFiles = [];
@@ -782,10 +807,10 @@
         selectedFiles.forEach(file => {
           formData.append('image[]', file);
         });
-        if (selectedFiles.length === 0) {
-          alert('Please upload at least one product image.');
-          return;
-        }
+        // if (selectedFiles.length === 0) {
+        //   alert('Please upload at least one product image.');
+        //   return;
+        // }
         fetch(form.action, {
           method: 'POST',
           body: formData

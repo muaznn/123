@@ -308,7 +308,7 @@
         // Update form fields with item details
         document.getElementById('code').value = data.itemID || 'N/A';
         document.getElementById('ProductName').value = data.itemName || 'N/A';
-        document.getElementById('description').textContent = data.description || 'No description available';
+        document.getElementById('description').textContent = data.descr || 'No description available';
         
         if (data.imagePath) {
           document.getElementById('main-image').src = data.imagePath;

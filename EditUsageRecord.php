@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['usageID']) && isset($_G
                 u.quantityUsed,
                 r.usageDate,
                 i.itemName, 
-                i.description,
+                i.descr,
                 i.quantity AS availableQuantity,
                 img.imagePath
             FROM item_usage u

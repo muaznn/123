@@ -1,0 +1,44 @@
+[23-Jul-2025 13:13:53 UTC] PHP Warning:  Undefined array key "condisi" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 19
+[23-Jul-2025 13:13:53 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'stat' in 'field list' in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php:135
+Stack trace:
+#0 C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php(135): mysqli->prepare('INSERT INTO ite...')
+#1 {main}
+  thrown in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 135
+[23-Jul-2025 13:35:28 UTC] PHP Warning:  Undefined array key "condisi" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 19
+[23-Jul-2025 13:35:28 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'stat' in 'field list' in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php:135
+Stack trace:
+#0 C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php(135): mysqli->prepare('INSERT INTO ite...')
+#1 {main}
+  thrown in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 135
+[23-Jul-2025 13:41:38 UTC] PHP Warning:  Undefined array key "stat" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 18
+[23-Jul-2025 13:41:38 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'stat' in 'field list' in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php:135
+Stack trace:
+#0 C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php(135): mysqli->prepare('INSERT INTO ite...')
+#1 {main}
+  thrown in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 135
+[23-Jul-2025 13:46:04 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'stat' in 'field list' in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php:33
+Stack trace:
+#0 C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php(33): mysqli->prepare('UPDATE item_equ...')
+#1 {main}
+  thrown in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 33
+[23-Jul-2025 13:51:23 UTC] PHP Warning:  Undefined array key "status" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 18
+[23-Jul-2025 13:51:23 UTC] PHP Warning:  Undefined array key "condition" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 19
+[23-Jul-2025 13:51:23 UTC] PHP Warning:  Undefined array key "description" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 22
+[23-Jul-2025 13:51:23 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''status'=?, condition=?, quantity=?, stockLevel=?, 'description'=? WHERE itemID=' at line 1 in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php:33
+Stack trace:
+#0 C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php(33): mysqli->prepare('UPDATE item_equ...')
+#1 {main}
+  thrown in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 33
+[23-Jul-2025 13:52:13 UTC] PHP Warning:  Undefined array key "status" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 18
+[23-Jul-2025 13:52:13 UTC] PHP Warning:  Undefined array key "condition" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 19
+[23-Jul-2025 13:52:13 UTC] PHP Warning:  Undefined array key "description" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 22
+[23-Jul-2025 13:52:13 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''status'=?, condition=?, quantity=?, stockLevel=?, 'description'=? WHERE itemID=' at line 1 in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php:33
+Stack trace:
+#0 C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php(33): mysqli->prepare('UPDATE item_equ...')
+#1 {main}
+  thrown in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 33
+[23-Jul-2025 14:29:15 UTC] PHP Warning:  Undefined array key "condisi" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 19
+[23-Jul-2025 16:04:02 UTC] PHP Warning:  Undefined array key "condisi" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 19
+[23-Jul-2025 16:09:41 UTC] PHP Warning:  Undefined array key "stat" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 18
+[23-Jul-2025 16:11:13 UTC] PHP Warning:  Undefined array key "condisi" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 19
+[23-Jul-2025 17:07:15 UTC] PHP Warning:  Undefined array key "stat" in C:\laragon\www\InventoryManagementSystem\123\store_item_equipment.php on line 18

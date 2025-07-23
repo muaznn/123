@@ -240,7 +240,7 @@
           <div class="main-img">
             <img
               id="equipment-img"
-              src="images/dumbbell.jpg"
+              src="images/placeholder.jpg"
               alt="Equipment Image"
               onclick="openModal(this.src)"
             />
@@ -261,10 +261,35 @@
   <script>
   // Load sidebar
   fetch("sidebar.html")
-    .then((response) => response.text())
-    .then((data) => {
-      document.getElementById("sidebar-placeholder").innerHTML = data;
-    });
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("sidebar-placeholder").innerHTML = html;
+
+          const currentPage = decodeURIComponent(
+            window.location.pathname.split("/").pop()
+          );
+
+          const sidebarLinks = document.querySelectorAll(".sidebar a");
+
+          const relatedPages = [
+            "AddNewItem(Latest).html",
+            "AddNewItemSaveLatest.html",
+            "manageItem.html",
+          ];
+
+          sidebarLinks.forEach((link) => {
+            const href = decodeURIComponent(link.getAttribute("href"));
+
+            if (
+              relatedPages.includes(currentPage) &&
+              href === "manageItem.html"
+            ) {
+              link.classList.add("active");
+            } else if (href === currentPage) {
+              link.classList.add("active");
+            }
+          });
+        });
 
   // Close button redirect
   document.querySelector('.btn.back').addEventListener('click', () => {
@@ -324,7 +349,7 @@
         if (formData.mainImage) {
           mainImg.src = formData.mainImage;
         } else {
-          mainImg.src = 'images/dumbbell.jpg';
+          mainImg.src = 'images/placeholder.jpg';
         }
 
         // Update additional images
@@ -376,9 +401,9 @@
 
             const mainImg = document.getElementById('equipment-img');
             if (images.length > 0) {
-              mainImg.src = images[0] || 'images/dumbbell.jpg';
+              mainImg.src = images[0] || 'images/placeholder.jpg';
             } else {
-              mainImg.src = 'images/dumbbell.jpg';
+              mainImg.src = 'images/placeholder.jpg';
             }
 
             const additionalThumbnails = document.getElementById('additional-thumbnails');
@@ -405,7 +430,7 @@
             document.getElementById('condition').textContent = '--';
             document.getElementById('details').textContent = '--';
             document.getElementById('additional-thumbnails').textContent = '--';
-            document.getElementById('equipment-img').src = 'images/dumbbell.jpg';
+            document.getElementById('equipment-img').src = 'images/placeholder.jpg';
           }
         })
         .catch(error => {
@@ -418,7 +443,7 @@
           document.getElementById('condition').textContent = '--';
           document.getElementById('details').textContent = '--';
           document.getElementById('additional-thumbnails').textContent = '--';
-          document.getElementById('equipment-img').src = 'images/dumbbell.jpg';
+          document.getElementById('equipment-img').src = 'images/placeholder.jpg';
         });
     }
   });
