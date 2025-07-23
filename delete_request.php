@@ -1,26 +1,48 @@
 <?php
-include 'db_connection.php';
+// delete_request.php
+// This script handles the deletion of an item request based on requestID passed via GET
 
-if (isset($_GET['requestID'])) {
-    $requestID = intval($_GET['requestID']);
+header('Content-Type: text/plain');
 
-    // Delete from item_maintenance
-    $conn->query("DELETE FROM item_maintenance WHERE requestID = $requestID");
-
-    // Delete from maintenance_request_images
-    $conn->query("DELETE FROM maintenance_request_images WHERE requestID = $requestID");
-
-    // Delete from maintenance_request
-    $sql = "DELETE FROM maintenance_request WHERE requestID = $requestID";
-    if ($conn->query($sql) === TRUE) {
-        echo "success";
-    } else {
-        echo "fail: " . $conn->error;
-    }
-
-} else {
-    echo "no-id";
+if (!isset($_GET['itemID'])) {
+    echo "error: missing requestID";
+    exit;
 }
 
+$requestID = $_GET['itemID'];
+
+// Include database connection
+include 'db_connection.php'; // Adjust the path if needed
+
+ // Assuming OpenCon() is the function to open DB connection
+
+if (!$conn) {
+    echo "error: database connection failed";
+    exit;
+}
+
+// Prepare and execute delete query
+$sql = "DELETE FROM item_equipment_info WHERE itemID = ?"; // Adjust table and column names as per your DB schema
+
+$stmt = $conn->prepare($sql);
+if (!$stmt) {
+    echo "error: failed to prepare statement";
+    $conn->close();
+    exit;
+}
+
+$stmt->bind_param("i", $requestID);
+
+if ($stmt->execute()) {
+    if ($stmt->affected_rows > 0) {
+        echo "success";
+    } else {
+        echo "error: no record deleted";
+    }
+} else {
+    echo "error: failed to execute delete";
+}
+
+$stmt->close();
 $conn->close();
 ?>
