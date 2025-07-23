@@ -31,7 +31,7 @@
           <span class="usage-title">Maintenance Record</span>
         </div>
         <div class="btn-holder">
-          <button class="btn back" onclick="location.href='SubmitMaintenanceRequest3.html'"><i class="fas fa-arrow-left"></i>Add New Request</button>
+          <button class="btn back" onclick="location.href='SubmitMaintenanceRequest3.html'"><i class="bi bi-plus-lg"></i>Add New Request</button>
         </div>
       </div>
 
@@ -63,18 +63,49 @@
     </div>
 
     <script>
-      fetch("sidebarTherapist.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("sidebar-placeholder").innerHTML = data;
+      // fetch("sidebarTherapist.html")
+      //   .then((response) => response.text())
+      //   .then((data) => {
+      //     document.getElementById("sidebar-placeholder").innerHTML = data;
 
-          const maintenanceRequestBtn = Array.from(document.querySelectorAll("a")).find(a => a.textContent.trim() === "Maintenance Request");
-          if (maintenanceRequestBtn) {
-            maintenanceRequestBtn.addEventListener("click", function(e) {
-              e.preventDefault();
-              window.location.href = "SubmitMaintenanceRequest1.html";
-            });
-          }
+      //     const maintenanceRequestBtn = Array.from(document.querySelectorAll("a")).find(a => a.textContent.trim() === "Maintenance Request");
+      //     if (maintenanceRequestBtn) {
+      //       maintenanceRequestBtn.addEventListener("click", function(e) {
+      //         e.preventDefault();
+      //         window.location.href = "SubmitMaintenanceRequest1.html";
+      //       });
+      //     }
+      //   });
+
+      fetch("sidebarTherapist.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("sidebar-placeholder").innerHTML = html;
+
+          const currentPage = decodeURIComponent(
+            window.location.pathname.split("/").pop()
+          );
+
+          const sidebarLinks = document.querySelectorAll(".sidebar a");
+
+          const relatedPages = [
+            "SubmitMaintenanceRequest1.html",
+            "SubmitMaintenanceRequest2.html",
+            "SubmitMaintenanceRequest3.html",
+          ];
+
+          sidebarLinks.forEach((link) => {
+            const href = decodeURIComponent(link.getAttribute("href"));
+
+            if (
+              relatedPages.includes(currentPage) &&
+              href === "handle maintenance request.html"
+            ) {
+              link.classList.add("active");
+            } else if (href === currentPage) {
+              link.classList.add("active");
+            }
+          });
         });
 
         fetch("SubmitMaintenanceRequest1.php")

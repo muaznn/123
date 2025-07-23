@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+include 'db_connection.php';
 
 if (!$conn) {
     die("Database connection failed.");
@@ -10,7 +10,7 @@ $issue = isset($_POST['issue']) ? trim($_POST['issue']) : '';
 $details = isset($_POST['details']) ? trim($_POST['details']) : '';
 $submittedBy = 123; // Hardcoded userID for now, replace with session or auth system
 
-$target_dir = __DIR__ . "/uploads/";
+$target_dir = __DIR__ . "/images/";
 if (!is_dir($target_dir)) {
     if (!mkdir($target_dir, 0755, true)) {
         die("Failed to create upload directory.");
@@ -112,7 +112,7 @@ try {
         throw new Exception("Transaction commit failed: " . $conn->error);
     }
 
-    header("Location: view_request.html");
+    header("Location: SubmitMaintenanceRequest1.html");
     exit();
 
 } catch (Exception $e) {

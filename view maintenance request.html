@@ -10,6 +10,137 @@
     />
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .modal-overlay.hidden {
+        display: none;
+      }
+
+      .modal-box {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 520px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        position: relative;
+        text-align: center;
+        animation: fadeInScale 0.3s ease;
+      }
+
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .modal-icon {
+        font-size: 60px;
+        color: #ffc107;
+        margin-bottom: 15px;
+      }
+
+      .modal-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: #333;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .modal-buttons .btn {
+        padding: 10px 25px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+      }
+
+      .modal-buttons .cancel {
+        background: #f0f0f0;
+        color: #333;
+      }
+
+      .modal-buttons .submit {
+        background: #4caf50;
+        color: white;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: #888;
+      }
+
+      /* Notification styles */
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+      }
+
+      .notification.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .notification i {
+        font-size: 18px;
+      }
+
+      .notification .message {
+        font-weight: 500;
+        font-size: 16px;
+      }
+
+      .notification.success {
+        background: #4caf50;
+        color: white;
+      }
+
+      .notification.error {
+        background: #ff5252;
+        color: white;
+      }
     </style>
   </head>
   <body>
@@ -121,7 +252,33 @@
       <img class="modal-content" id="modalImage" />
     </div>
 
+     <div class="notification" id="notification">
+      <i class="fas fa-check-circle"></i>
+      <span class="message"></span>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay hidden" id="deleteModal">
+      <div class="modal-box">
+        <button class="close-btn" onclick="closeDeleteModal()">×</button>
+        <div class="modal-icon">
+          <i class="fas fa-exclamation-triangle" style="color: #ff5252;"></i>
+        </div>
+        <h2 class="modal-title">Are you sure you want to delete this record?</h2>
+        <div id="deleteRequestInfo" style="margin-bottom: 20px; color: #666;"></div>
+        <div class="modal-buttons">
+          <button class="btn cancel" onclick="closeDeleteModal()">Cancel</button>
+          <button class="btn submit" id="confirmDeleteBtn" style="background-color: #ff5252;">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
+      let currentDeleteRequestID = null;
+      let currentDeleteRequestData = null;
+
       // Load sidebar
       fetch("sidebar.html")
         .then((res) => res.text())
@@ -161,6 +318,10 @@
         fetch(`get_request_detail.php?requestID=${requestID}`)
           .then((res) => res.json())
           .then((data) => {
+            // Store data for delete modal
+            currentDeleteRequestData = data;
+            currentDeleteRequestID = requestID;
+
             document.getElementById("request-id").textContent = data.requestID;
             document.getElementById("equipment").textContent =
               data.itemName || "N/A";
@@ -233,34 +394,118 @@
           })
           .catch((err) => {
             console.error("Error loading request detail:", err);
-            alert("Failed to load request detail.");
+            showNotification("Failed to load request detail.", "error");
           });
 
+        // Delete button event listener - opens modal
         document
           .getElementById("delete-btn")
           .addEventListener("click", function () {
-            const confirmDelete = confirm(
-              "Are you sure you want to delete this maintenance request?"
-            );
-            if (confirmDelete) {
-              fetch(`delete_request.php?requestID=${requestID}`, {
-                method: "GET",
-              })
-                .then((res) => res.text())
-                .then(() => {
-                  alert("Request deleted successfully.");
-                  window.location.href = "handle maintenance request.html";
-                })
-                .catch((err) => {
-                  console.error("Error deleting request:", err);
-                  alert("Failed to delete request.");
-                });
-            }
+            openDeleteModal();
+          });
+
+        // Confirm delete button event listener
+        document
+          .getElementById("confirmDeleteBtn")
+          .addEventListener("click", function () {
+            confirmDelete();
           });
       } else {
-        alert("No request ID provided in URL.");
+        showNotification("No request ID provided in URL.", "error");
       }
 
+      // Open delete modal function
+      function openDeleteModal() {
+        if (!currentDeleteRequestData) {
+          showNotification("Request data not loaded yet.", "error");
+          return;
+        }
+
+        const modal = document.getElementById('deleteModal');
+        const deleteInfo = document.getElementById('deleteRequestInfo');
+        
+        // Populate modal with request information
+        // deleteInfo.innerHTML = `
+        //   <strong>Request ID:</strong> ${currentDeleteRequestData.requestID}<br>
+        //   <strong>Equipment:</strong> ${currentDeleteRequestData.itemName || "N/A"}<br>
+        //   <strong>Issue:</strong> ${currentDeleteRequestData.itemIssue || "N/A"}<br>
+        //   <strong>Submitted by:</strong> ${currentDeleteRequestData.userName}<br>
+        //   <strong>Date:</strong> ${currentDeleteRequestData.dateSubmitted}
+        // `;
+        
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      }
+
+      // Close delete modal function  
+      function closeDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+      }
+
+      // Confirm delete function
+      function confirmDelete() {
+        if (!currentDeleteRequestID) {
+          showNotification("No request selected for deletion.", "error");
+          return;
+        }
+
+        const deleteBtn = document.getElementById('confirmDeleteBtn');
+        deleteBtn.disabled = true;
+        deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+
+        fetch(`delete_request.php?requestID=${currentDeleteRequestID}`, {
+          method: "GET",
+        })
+          .then((res) => res.text())
+          .then((response) => {
+            closeDeleteModal();
+            showNotification("Request deleted successfully!", "success");
+            
+            // Redirect after 2 seconds
+            setTimeout(() => {
+              window.location.href = "handle maintenance request.html";
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Error deleting request:", err);
+            showNotification("Failed to delete request.", "error");
+            
+            // Re-enable button on error
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+          });
+      }
+
+      // Show notification function
+      function showNotification(message, type = "success") {
+        const notification = document.getElementById("notification");
+        const messageSpan = notification.querySelector(".message");
+        const icon = notification.querySelector("i");
+
+        messageSpan.textContent = message;
+        
+        // Remove existing classes and add new ones
+        notification.classList.remove("success", "error");
+        notification.classList.add(type);
+
+        // Change icon based on type
+        if (type === "success") {
+          icon.className = "fas fa-check-circle";
+        } else {
+          icon.className = "fas fa-exclamation-circle";
+        }
+
+        notification.classList.add("show");
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          notification.classList.remove("show");
+        }, 5000);
+      }
+
+      // Image modal functions
       function openModal(src) {
         document.getElementById("modalImage").src = src;
         document.getElementById("imgModal").style.display = "block";
@@ -270,6 +515,23 @@
         document.getElementById("imgModal").style.display = "none";
       }
 
+      // Close modals when clicking outside
+      window.addEventListener('click', function(event) {
+        const deleteModal = document.getElementById('deleteModal');
+        if (event.target === deleteModal) {
+          closeDeleteModal();
+        }
+      });
+
+      // Close modals with ESC key
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          closeDeleteModal();
+          closeModal();
+        }
+      });
+
+      // Notification functionality
       document.addEventListener("DOMContentLoaded", function () {
         const notifBell = document.getElementById("notificationBell");
         const notifBadge = document.getElementById("notificationCount");

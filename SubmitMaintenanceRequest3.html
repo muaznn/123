@@ -197,10 +197,35 @@
 
   <script>
     fetch("sidebarTherapist.html")
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById("sidebar-placeholder").innerHTML = data;
-      });
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("sidebar-placeholder").innerHTML = html;
+
+          const currentPage = decodeURIComponent(
+            window.location.pathname.split("/").pop()
+          );
+
+          const sidebarLinks = document.querySelectorAll(".sidebar a");
+
+          const relatedPages = [
+            "SubmitMaintenanceRequest1.html",
+            "SubmitMaintenanceRequest2.html",
+            "SubmitMaintenanceRequest3.html",
+          ];
+
+          sidebarLinks.forEach((link) => {
+            const href = decodeURIComponent(link.getAttribute("href"));
+
+            if (
+              relatedPages.includes(currentPage) &&
+              href === "handle maintenance request.html"
+            ) {
+              link.classList.add("active");
+            } else if (href === currentPage) {
+              link.classList.add("active");
+            }
+          });
+        });
     
   let selectedFilesAdjusted = [];
   const fileInputAdjusted = document.getElementById('adjustedFile');
@@ -298,10 +323,10 @@
       showErrorAdjusted("Please fill out the Details field.");
       return;
     }
-    if (selectedFilesAdjusted.length === 0) {
-      showErrorAdjusted("Please select at least one file.");
-      return;
-    }
+    // if (selectedFilesAdjusted.length === 0) {
+    //   showErrorAdjusted("Please select at least one file.");
+    //   return;
+    // }
 
     // Show modal popup
     modal.classList.remove('hidden');

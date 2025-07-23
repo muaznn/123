@@ -8,6 +8,7 @@ SELECT
     u.userID,
     u.name AS userName,
     mr.status,
+    mr.dateSubmitted,
     ie.itemName
 FROM maintenance_request mr
 JOIN user u ON mr.submittedBy = u.userID

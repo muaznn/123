@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if ($user['role'] === 'admin') {
                 header("Location: handle maintenance request.html");
             } elseif ($user['role'] === 'therapist') {
-                header("Location: recordUsage.html");
+                header("Location: SubmitMaintenanceRequest1.html");
             } else {
                 // Default redirect if role doesn't match any condition
                 header("Location: default_page.html");
