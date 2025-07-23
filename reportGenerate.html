@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Handle Maintenance Request</title>
+    <link rel="stylesheet" href="style4.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  </head>
+  <body>
+    <!-- Placeholder untuk sidebar -->
+    <div id="sidebar-placeholder"></div>
+
+    <div class="main-content">
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text"
+            >Admin <i class="fas fa-chevron-down text-base"></i
+          ></span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+      <div class="table-container">
+        <div class="table-title">
+          <span class="handle-maintenance-title">Generate Report</span>
+        </div>
+       <hr>
+
+    <form id="reportForm" method="POST" action="store_report_log.php">
+      <!-- Report Type -->
+      <div class="mb-3">
+        <label for="reportType" class="form-label">Report Type</label>
+        <select class="form-select" id="reportType" name="reportType" required>
+          <option value="" disabled selected>Select Report Type</option>
+          <option value="Usage">Usage Report</option>
+          <option value="Maintenance">Maintenance Report</option>
+        </select>
+      </div>
+
+      <!-- Date Range -->
+      <div class="mb-3">
+        <label class="form-label">Date Range</label>
+        <div class="d-flex gap-3">
+          <div>
+            <label for="startDate" class="form-label">Start Date</label>
+            <input type="date" class="form-control" id="startDate" name="startDate" required>
+          </div>
+          <div>
+            <label for="endDate" class="form-label">End Date</label>
+            <input type="date" class="form-control" id="endDate" name="endDate" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="btn-holder">
+            <button type="button" class="bten back" id="backButton"><i class="fas fa-arrow-left"></i> Back</button>
+            <button type="submit" class="bten save"><i class="fas fa-save"></i>Generate</button>
+        </div>
+    </form>
+  
+  </div>
+  </div>
+
+  <!-- Modal for displaying report -->
+  <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="reportModalLabel">Report Generated</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modalCloseBtn"></button>
+        </div>
+        <div class="modal-body">
+          <div id="modalTableContainer" style="overflow-x:auto;">
+            <!-- Table will be dynamically inserted here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="bten back" id="modalCloseFooterBtn">Close</button>
+          <button type="button" class="bten save" id="modalExportBtn">Export</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // sidebar
+    fetch("sidebar.html")
+      .then((response) => response.text())
+      .then((data) => {
+        document.getElementById("sidebar-placeholder").innerHTML = data;
+      });
+
+    const reportType = document.getElementById('reportType');
+    const filterStatus = document.getElementById('filterStatus');
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    const form = document.getElementById('reportForm');
+
+    // Enable/disable filters based on report type
+    reportType.addEventListener('change', function() {
+      const type = this.value;
+      if (type === 'Usage') {
+        filterStatus.disabled = true;
+        filterStatus.checked = false;
+      } else if (type === 'Maintenance') {
+        filterStatus.disabled = false;
+      }
+    });
+
+    // Ensure end date >= start date
+    startDate.addEventListener('change', function() {
+      endDate.min = this.value;
+      if (endDate.value < this.value) {
+        endDate.value = '';
+      }
+    });
+
+    // Modal elements
+    const reportModal = new bootstrap.Modal(document.getElementById('reportModal'), { backdrop: false });
+    const modalTableContainer = document.getElementById('modalTableContainer');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalCloseFooterBtn = document.getElementById('modalCloseFooterBtn');
+    const modalExportBtn = document.getElementById('modalExportBtn');
+
+    // Close modal handlers
+    modalCloseBtn.addEventListener('click', () => {
+      reportModal.hide();
+      window.location.href = 'reportMain.html';
+    });
+    modalCloseFooterBtn.addEventListener('click', () => {
+      reportModal.hide();
+      window.location.href = 'reportMain.html';
+    });
+
+    // Export modal table to PDF
+    modalExportBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Add image and text above the table
+      const img = new Image();
+      img.src = 'images/physiocare-logo.png';
+
+      img.onload = () => {
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const margin = 10;
+        const imgWidth = 70; // standard logo width for A4
+        const imgHeight = 15; // adjusted height proportionally
+        const textX = margin;
+        const textY = margin + 10;
+
+        // Add text on the left
+        const titleElement = document.querySelector('.handle-maintenance-title') || {textContent: 'Report'};
+        const style = window.getComputedStyle(titleElement);
+        const fontSize = (parseInt(style.fontSize) || 16) - 4; // reduce text size
+        const fontFamily = style.fontFamily || 'Times New Roman';
+        const fontWeight = style.fontWeight;
+
+        doc.setFont(fontFamily);
+        if (fontWeight === '700' || fontWeight === 'bold') {
+          doc.setFont(undefined, 'bold');
+        } else {
+          doc.setFont(undefined, 'normal');
+        }
+        doc.setFontSize(fontSize);
+
+        doc.text(titleElement.textContent, textX, textY);
+
+        // Add image on the right
+        const imgX = pdfWidth - margin - imgWidth;
+        doc.addImage(img, 'PNG', imgX, margin, imgWidth, imgHeight);
+
+        // Now add the table below
+        const table = modalTableContainer.querySelector('table');
+        if (!table) {
+          alert('No table data to export.');
+          return;
+        }
+        html2canvas(table).then(canvas => {
+          const imgData = canvas.toDataURL('image/png');
+          const imgProps = doc.getImageProperties(imgData);
+          const pdfWidth = doc.internal.pageSize.getWidth();
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+          const tableY = margin + imgHeight + 10;
+          doc.addImage(imgData, 'PNG', 0, tableY, pdfWidth, pdfHeight);
+          doc.save('report.pdf');
+        });
+      };
+    });
+
+    // On submit
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      if (!reportType.value || !startDate.value || !endDate.value) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      if (endDate.value < startDate.value) {
+        alert('End date cannot be before start date.');
+        return;
+      }
+
+      // Submit form data to store_report_log.php via fetch API
+      const formData = new FormData(form);
+      fetch(form.action, {
+        method: form.method,
+        body: formData
+      })
+      .then(response => response.text())
+      .then(data => {
+        console.log('Server response:', data);
+        let reportID = null;
+        try {
+          const jsonData = JSON.parse(data);
+          if (jsonData.reportID) {
+            reportID = jsonData.reportID;
+          }
+          if (jsonData.message && jsonData.message.toLowerCase().includes('successfully')) {
+            console.log('Data successfully stored in the database.');
+          } else {
+            console.warn('Data storage may have failed:', jsonData.message || data);
+          }
+        } catch (e) {
+          // Not JSON, fallback to regex
+          if (data.includes('successfully')) {
+            console.log('Data successfully stored in the database.');
+          } else {
+            console.warn('Data storage may have failed:', data);
+          }
+          const match = data.match(/reportID\s*=\s*(\d+)/i);
+          if (match) {
+            reportID = match[1];
+          }
+        }
+
+        if (!reportID) {
+          alert('Failed to retrieve report ID from server response.');
+          return;
+        }
+
+        // Fetch report data from server
+        fetch(`get_report_data.php?reportID=${encodeURIComponent(reportID)}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.error) {
+              modalTableContainer.innerHTML = `<p>Error: ${data.error}</p>`;
+              return;
+            }
+            if (data.length === 0) {
+              modalTableContainer.innerHTML = '<p>No data found for the selected criteria.</p>';
+              return;
+            }
+
+            // Build table HTML based on report type
+            let tableHTML = '<table style="padding: 0px 10px 0px 30px;"><thead><tr style="text-align: center;">';
+            if (reportType.value === 'Maintenance') {
+              tableHTML += `
+                <th>No.</th>
+                <th>Equipment</th>
+                <th>Issue</th>
+                <th>Date Reported</th>
+                <th>Reported By</th>
+                <th>Status</th>
+                <th>Solution</th>
+              `;
+            } else if (reportType.value === 'Usage') {
+              tableHTML += `
+                <th>No.</th>
+                <th>Item Name</th>
+                <th>Quantity Used</th>
+                <th>Date Used</th>
+                <th>Used By</th>
+              `;
+            }
+            tableHTML += '</tr></thead><tbody>';
+
+            data.forEach((row, index) => {
+              tableHTML += '<tr>';
+              tableHTML += `<td>${index + 1}.</td>`;
+              if (reportType.value === 'Maintenance') {
+                tableHTML += `
+                  <td>${row.itemName || ''}</td>
+                  <td>${row.itemIssue || ''}</td>
+                  <td>${row.dateSubmitted || ''}</td>
+                  <td>${row.submittedBy || ''}</td>
+                  <td>${row.status || ''}</td>
+                  <td>${row.detailsMaintenance || ''}</td>
+                  <td>${row.handledBy || ''}</td>
+                  <td>${row.solution || ''}</td>
+                `;
+              } else if (reportType.value === 'Usage') {
+                tableHTML += `
+                  <td>${row.itemName || ''}</td>
+                  <td>${row.quantityUsed || ''}</td>
+                  <td>${row.usageDate || ''}</td>
+                  <td>${row.usedBy || ''}</td>
+                  <td>${row.notes || ''}</td>
+                `;
+              }
+              tableHTML += '</tr>';
+            });
+
+            tableHTML += '</tbody></table>';
+
+            modalTableContainer.innerHTML = tableHTML;
+            reportModal.show();
+          })
+          .catch(error => {
+            modalTableContainer.innerHTML = `<p>Error fetching data: ${error}</p>`;
+            reportModal.show();
+          });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+
+    // Back button functionality
+    const backButton = document.getElementById('backButton');
+    backButton.addEventListener('click', function() {
+      // window.history.back();
+      window.location.href = 'reportMain.html';
+    });
+  </script>
+
+  </body>
+</html>

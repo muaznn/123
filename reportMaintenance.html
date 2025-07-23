@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Handle Maintenance Request</title>
+    <link rel="stylesheet" href="style4.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+  </head>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  </head>
+  <body>
+    <!-- Placeholder untuk sidebar -->
+    <div id="sidebar-placeholder"></div>
+
+    <div class="main-content">
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text"
+            >Admin <i class="fas fa-chevron-down text-base"></i
+          ></span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+     
+      <div class="table-container">
+        
+        <div class="table-title">
+          <span class="handle-maintenance-title">Maintenance Report</span>
+          <div class="btn-holder">
+            <button class="bten back"><i class="fas fa-arrow-left"></i> Close</button>
+            <button type="submit" class="bten save"><i class="fas fa-save"></i>export</button>
+        </div>
+        </div>
+
+      <table style="padding: 0px 10px 0px 30px;">
+          <thead>
+            <tr style="text-align: center;">
+              <th>No.</th>
+              <th>Equipment</th>
+              <th>Issue</th>
+              <th>Date Reported</th>
+              <th>Reported By</th>
+              <th>Status</th>
+              <th>Solution</th>
+
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+  
+  </div>
+  </div>
+    <script>
+      // sidebar
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-placeholder").innerHTML = data;
+        });
+
+      // Fetch maintenance report data from new PHP endpoint with startDate and endDate from URL params
+      const urlParams = new URLSearchParams(window.location.search);
+      const reportID = urlParams.get('reportID');
+
+      if (!reportID) {
+        console.error("Missing reportID in URL parameters");
+      } else {
+      // Fetch report data from unified endpoint
+      fetch(`get_report_data.php?reportID=${encodeURIComponent(reportID)}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.error) {
+            console.error("Error from server:", data.error);
+            return;
+          }
+          const tbody = document.querySelector("tbody");
+          tbody.innerHTML = ""; // Clear existing rows
+
+          data.forEach((row, index) => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${index + 1}.</td>
+                <td>${row.itemName || ''}</td>
+                <td>${row.itemIssue || ''}</td>
+                <td>${row.dateSubmitted || ''}</td>
+                <td>${row.submittedBy || ''}</td>
+                <td>${row.status || ''}</td>
+                <td>${row.detailsMaintenance || ''}</td>
+                <td>${row.handledBy || ''}</td>
+                <td>${row.solution || ''}</td>
+              </tr>
+            `;
+          });
+        })
+        .catch((error) => console.error("Error loading report data:", error));
+      }
+
+      // Close button redirect
+      document.querySelector('.bten.back').addEventListener('click', () => {
+        window.location.href = 'reportMain.html';
+      });
+
+        // Export button to PDF
+        document.querySelector('.bten.save').addEventListener('click', (e) => {
+          e.preventDefault();
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+
+          // Add image and text above the table
+          const img = new Image();
+          img.src = 'images/physiocare-logo.png';
+
+          img.onload = () => {
+            const pdfWidth = doc.internal.pageSize.getWidth();
+            const margin = 10;
+            const imgWidth = 70; // standard logo width for A4
+            const imgHeight = 15; // adjusted height proportionally
+            const textX = margin;
+            const textY = margin + 10;
+
+            // Add text on the left
+            const titleElement = document.querySelector('.handle-maintenance-title');
+            const style = window.getComputedStyle(titleElement);
+            const fontSize = (parseInt(style.fontSize) || 16) - 4; // reduce text size
+            const fontFamily = style.fontFamily || 'Times New Roman';
+            const fontWeight = style.fontWeight;
+
+            doc.setFont(fontFamily);
+            if (fontWeight === '700' || fontWeight === 'bold') {
+              doc.setFont(undefined, 'bold');
+            } else {
+              doc.setFont(undefined, 'normal');
+            }
+            doc.setFontSize(fontSize);
+
+            doc.text('Maintenance Report', textX, textY);
+
+            // Add image on the right
+            const imgX = pdfWidth - margin - imgWidth;
+            doc.addImage(img, 'PNG', imgX, margin, imgWidth, imgHeight);
+
+            // Now add the table below
+            const table = document.querySelector('table');
+            html2canvas(table).then(canvas => {
+              const imgData = canvas.toDataURL('image/png');
+              const imgProps = doc.getImageProperties(imgData);
+              const pdfWidth = doc.internal.pageSize.getWidth();
+              const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+              const tableY = margin + imgHeight + 10;
+              doc.addImage(imgData, 'PNG', 0, tableY, pdfWidth, pdfHeight);
+              doc.save('maintenance_report.pdf');
+            });
+          };
+        });
+    </script>
+  </body>
+</html>
