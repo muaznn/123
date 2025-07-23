@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Maintenance Request Details</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div id="sidebar-placeholder"></div>
+
+    <div class="main-content">
+      <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text">
+            Therapist <i class="fas fa-chevron-down text-base"></i>
+          </span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+
+      <div class="header-title-wrapper">
+        <div class="maintenance-title">Maintenance Request</div>
+      <div class="btn-holder">
+        <button class="btn back" onclick="window.history.back();">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+      </div>
+      </div>
+      <div class="request-detail-wrapper">
+        <div class="left-request-detail">
+          <h2>Equipment Maintenance Details</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Request ID</label>
+              <div class="info-box" id="request-id">Loading...</div>
+            </div>
+            <div class="info-item">
+              <label>Equipment</label>
+              <div class="info-box" id="equipment">Loading...</div>
+            </div>
+            <div class="info-item">
+              <label>Date Submitted</label>
+              <div class="info-box" id="date-submitted">Loading...</div>
+            </div>
+            <div class="info-item">
+              <label>Issue</label>
+              <div class="info-box" id="issue">Loading...</div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <label>Details</label>
+            <div class="info-box large" id="details">Loading...</div>
+          </div>
+
+          <div class="status-display">
+            <label>Status</label>
+            <div class="status-label" id="status">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+    <script>
+      // Load sidebar
+      fetch("sidebarTherapist.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-placeholder").innerHTML = data;
+        });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestID = urlParams.get("requestID");
+
+      console.log("Request ID:", requestID);
+
+      if (requestID) {
+        fetch(`SubmitMaintenanceRequest2.php?requestID=${requestID}`)
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+          })
+          .then((data) => {
+            console.log("Fetched data:", data);
+            document.getElementById("request-id").textContent = data.requestID;
+            document.getElementById("equipment").textContent =
+              data.itemName || "N/A";
+            document.getElementById("date-submitted").textContent =
+              data.dateSubmitted;
+            document.getElementById("issue").textContent =
+              data.itemIssue || "N/A";
+            document.getElementById("details").textContent =
+              data.detailsMaintenance || "N/A";
+
+            const statusDot = `<span class="status-dot ${data.status
+              .toLowerCase()
+              .replace(" ", "-")}"></span>`;
+            document.getElementById(
+              "status"
+            ).innerHTML = `${statusDot} ${data.status}`;
+          })
+          .catch((err) => {
+            console.error("Error loading request detail:", err);
+            alert("Failed to load request detail.");
+          });
+      } else {
+        alert("No request ID provided in URL.");
+      }
+
+      function openModal(src) {
+        document.getElementById("modalImage").src = src;
+        document.getElementById("imgModal").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("imgModal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

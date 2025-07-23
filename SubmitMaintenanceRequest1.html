@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Maintenance Request</title>
+      <link rel="stylesheet" href="style.css" />
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+    </style>
+    </head>
+  <body>
+    <div id="sidebar-placeholder"></div>
+
+    <div class="main-content">
+    <header class="header-title">
+        <div class="header-group">
+          <span class="admin-text">
+            Therapist <i class="fas fa-chevron-down text-base"></i>
+          </span>
+          <i class="far fa-bell cursor-pointer"></i>
+          <i class="far fa-user-circle cursor-pointer"></i>
+        </div>
+      </header>
+
+      
+        <div class="header-title-wrapper">
+        <div class="tableUsage-title">
+          <span class="usage-title">Maintenance Record</span>
+        </div>
+        <div class="btn-holder">
+          <button class="btn back" onclick="location.href='SubmitMaintenanceRequest3.html'"><i class="fas fa-arrow-left"></i>Add New Request</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-title">
+          <span class="handle-maintenance-title">Maintenance Request List</span>
+          <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-input" placeholder="Search" class="search-input" />
+          </div>
+    
+        </div>
+        <table>
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Product Code</th>
+                <th>Product Name</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="request-table-body">
+              <!-- Rows will be injected by JS -->
+            </tbody>
+          </table>
+        </div>
+    </div>
+
+    <script>
+      fetch("sidebarTherapist.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-placeholder").innerHTML = data;
+
+          const maintenanceRequestBtn = Array.from(document.querySelectorAll("a")).find(a => a.textContent.trim() === "Maintenance Request");
+          if (maintenanceRequestBtn) {
+            maintenanceRequestBtn.addEventListener("click", function(e) {
+              e.preventDefault();
+              window.location.href = "SubmitMaintenanceRequest1.html";
+            });
+          }
+        });
+
+        fetch("SubmitMaintenanceRequest1.php")
+        .then(response => response.json())
+        .then(data => {
+          const tbody = document.getElementById("request-table-body");
+          tbody.innerHTML = "";
+          data.forEach((item, index) => {
+            let statusColor = "";
+            if (item.status === "Completed") {
+              statusColor = "green";
+            } else if (item.status === "In Progress") {
+              statusColor = "blue";
+            } else if (item.status === "New") {
+              statusColor = "yellow";
+            }
+            const tr = document.createElement("tr");
+            const itemID = item.itemID || item.id || "";
+            tr.innerHTML = `
+              <td>${index + 1}</td>
+              <td>${item.product_code}</td>
+              <td>${item.product_name}</td>
+              <td>${item.date}</td>
+              <td><span class="status-dot ${statusColor}"></span> ${item.status}</td>
+              <td class="action-buttons">
+                <i class="fa view fa-eye" aria-hidden="true" data-requestid="${
+                item.requestID
+              }" style="cursor:pointer;"></i>              </td>`; 
+            tbody.appendChild(tr);
+          });
+
+          // Add click event listener for view icons
+          document.querySelectorAll('.fa-eye').forEach(icon => {
+            icon.addEventListener('click', () => {
+              const requestID = icon.getAttribute('data-requestid');
+              if (requestID) {
+                window.location.href = `SubmitMaintenanceRequest2.html?requestID=${requestID}`;
+              }
+            });
+          });
+
+          // Add search filter functionality
+          const searchInput = document.getElementById('search-input');
+          searchInput.addEventListener('input', () => {
+            const filter = searchInput.value.toLowerCase();
+            const rows = tbody.getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+              const productNameCell = rows[i].getElementsByTagName('td')[2];
+              if (productNameCell) {
+                const productName = productNameCell.textContent || productNameCell.innerText;
+                if (productName.toLowerCase().indexOf(filter) > -1) {
+                  rows[i].style.display = "";
+                } else {
+                  rows[i].style.display = "none";
+                }
+              }
+            }
+          });
+        });
+    </script>
+  </body>
+</html>
